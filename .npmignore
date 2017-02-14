@@ -1,0 +1,21 @@
+# .babelrc
+.babelrc
+
+# Tests
+/**/*spec.js
+
+# Coverage reports
+/coverage
+
+/tmp
+
+# IDE stuff
+.idea/
+
+# Node stuff
+node_modules
+*.log
+
+# OS Stuff
+.DS_Store
+Thumbs.db

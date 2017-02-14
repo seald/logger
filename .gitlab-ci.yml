@@ -1,0 +1,33 @@
+image: node:latest
+
+variables:
+  CI_USER: $CI_USER
+  CI_USER_PASSWORD: $CI_USER_PASSWORD
+
+before_script:
+  - echo "//nexus.tardis.seald.io/repository/npm/:_authToken=${AUTH_TOKEN}" > .npmrc
+  - echo "//nexus.tardis.seald.io/repository/npm-hosted/:_authToken=${AUTH_TOKEN}" >> .npmrc
+  - echo "registry=https://nexus.tardis.seald.io/repository/npm/" >> .npmrc
+  - echo "@seald:registry=https://nexus.tardis.seald.io/repository/npm-hosted/" >> .npmrc
+  - echo "always-auth=true" >> .npmrc
+  - npm install --silent
+
+test:
+  stage: test
+  cache:
+    paths:
+    - ~/.npm
+  script:
+    - npm test
+
+
+deploy:
+  stage: deploy
+  cache:
+    paths:
+    - ~/.npm
+  script:
+    - npm run build
+    - npm publish
+  only:
+    - tags

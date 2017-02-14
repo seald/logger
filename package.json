@@ -1,0 +1,22 @@
+{
+  "name": "@seald/logger",
+  "version": "0.0.1",
+  "description": "",
+  "jsnext:main": "src/index.js",
+  "main": "build/index.js",
+  "publishConfig": {
+    "registry": "https://nexus.tardis.seald.io/repository/npm-hosted"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.tardis.seald.io/seald/logger.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "standard": {
+    "parser": "babel-eslint"
+  }
+}
