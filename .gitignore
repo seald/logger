@@ -1,3 +1,13 @@
-.idea/*
+# IDE related
+.idea/
+
+# OS related
 .DS_Store
+
+# NPM related
+node_modules/
+
+# Build process related
 build/
+coverage/
+tmp/
