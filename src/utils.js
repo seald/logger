@@ -39,22 +39,19 @@ export const getAllowedNamespaces = (unParsedNamespaces, levels, defaultLevelInd
  * @param {string} inputNamespace
  * @param {Array.<{namespace:Array.<string>, level: number}>} allowedNamespaces
  */
-export const getLevel = (inputNamespace, allowedNamespaces) => {
-  const splitInputnamespace = inputNamespace.split('/')
-  return allowedNamespaces
-    .filter(allowedNamespaces => {
-      if (allowedNamespaces.namespace.length <= splitInputnamespace.length) {
-        const splitInputnamespaceSubset = splitInputnamespace.slice(0, allowedNamespaces.namespace.length)
-        return splitInputnamespaceSubset.every((value, index) => value === allowedNamespaces.namespace[index] || allowedNamespaces.namespace[index] === '')
-      } else return false
-    })
+export const getLevel = (inputNamespace, allowedNamespaces) =>
+  allowedNamespaces
+    .filter(allowedNamespaces =>
+      allowedNamespaces.namespace.join('/') === '' ||
+      inputNamespace === allowedNamespaces.namespace.join('/') ||
+      inputNamespace.startsWith(allowedNamespaces.namespace.join('/') + '/')
+    )
     .reduce(({ previousLevel, priority }, { level, namespace }) =>
       (priority <= namespace.length)
         ? { previousLevel: level, priority: namespace.length }
         : { priority, previousLevel }, { previousLevel: null, priority: -1 }
     )
     .previousLevel
-}
 
 /**
  * To handle the cache of namespace levels

@@ -8,7 +8,7 @@
     "registry": "https://nexus.tardis.seald.io/repository/npm-hosted"
   },
   "scripts": {
-    "pretest": "npm run build",
+    "pretest": "npm run build && standard",
     "test": "mocha --require source-map-support/register --timeout 15000 $(find lib -name '*.spec.js')",
     "prebuild": "rm -rf lib/",
     "build": "babel src --out-dir lib --source-maps",
