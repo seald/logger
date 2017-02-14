@@ -18,7 +18,7 @@ test:
     paths:
     - ~/.npm
   script:
-    - npm test
+    - npm run coverage
 
 
 deploy:

@@ -8,6 +8,7 @@
 node_modules/
 
 # Build process related
-build/
 coverage/
 tmp/
+.nyc_output/
+lib/

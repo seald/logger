@@ -1,5 +1,10 @@
-# .babelrc
+# configs
 .babelrc
+.nycrc
+.eslintrc
+.npmrc
+.gitignore
+.gitlab-ci.yml
 
 # Tests
 /**/*spec.js

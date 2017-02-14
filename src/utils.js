@@ -14,24 +14,24 @@ import chalk from 'chalk'
  * @param {number} defaultLevelIndex
  * @returns {Array.<{namespace:Array.<string>, level: number}>}
  */
-export const getAllowedNamespaces = (unParsedNamespaces, levels, defaultLevelIndex) => {
-  return unParsedNamespaces
+export const getAllowedNamespaces = (unParsedNamespaces, levels, defaultLevelIndex) =>
+  unParsedNamespaces
     .split(',')
     .map(str => str.trim())
     .filter(str => str !== '')
     .map(str => {
-      const [ namespace, level = levels[ defaultLevelIndex ] ] = str.split(':')
+      const [ namespace, level = levels[ defaultLevelIndex ] ] = str.split(':').map(str => str.trim())
       const splitNameSpace = namespace.split('/')
       let starIndex = splitNameSpace.findIndex(el => el === '*')
       if (starIndex === 0) {
-        splitNameSpace[0] = ''
+        splitNameSpace[ 0 ] = ''
         starIndex = 1
       }
       if (starIndex !== -1) splitNameSpace.splice(starIndex)
       const levelIndex = levels.findIndex(el => el === level)
       return { namespace: splitNameSpace, level: levelIndex === -1 ? 1 : levelIndex }
     })
-}
+
 /**
  * It takes inputNamespace formatted in the same way as unParsedNameSpaces but without *,
  * and takes allowedNamespaces which is the result given by getAllowedNamespaces.
@@ -39,14 +39,22 @@ export const getAllowedNamespaces = (unParsedNamespaces, levels, defaultLevelInd
  * @param {string} inputNamespace
  * @param {Array.<{namespace:Array.<string>, level: number}>} allowedNamespaces
  */
-export const getLevel = (inputNamespace, allowedNamespaces) => allowedNamespaces
-  .filter(allowedNamespace => inputNamespace.startsWith(allowedNamespace.namespace.join('/')))
-  .reduce(({ previousLevel, priority }, { level, namespace }) =>
-    (priority <= namespace.length)
-      ? { previousLevel: level, priority: namespace.length }
-      : { priority, previousLevel }, { previousLevel: null, priority: -1 }
-  )
-  .previousLevel
+export const getLevel = (inputNamespace, allowedNamespaces) => {
+  const splitInputnamespace = inputNamespace.split('/')
+  return allowedNamespaces
+    .filter(allowedNamespaces => {
+      if (allowedNamespaces.namespace.length <= splitInputnamespace.length) {
+        const splitInputnamespaceSubset = splitInputnamespace.slice(0, allowedNamespaces.namespace.length)
+        return splitInputnamespaceSubset.every((value, index) => value === allowedNamespaces.namespace[index] || allowedNamespaces.namespace[index] === '')
+      } else return false
+    })
+    .reduce(({ previousLevel, priority }, { level, namespace }) =>
+      (priority <= namespace.length)
+        ? { previousLevel: level, priority: namespace.length }
+        : { priority, previousLevel }, { previousLevel: null, priority: -1 }
+    )
+    .previousLevel
+}
 
 /**
  * To handle the cache of namespace levels
