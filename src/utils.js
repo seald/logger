@@ -109,5 +109,5 @@ export const formatter = (logEntry, levels, chalkMap = false) => {
 export const printer = (logEntry, allowedNamespaces, levels, chalkMap, cacheObject = {}) => {
   const formatted = formatter(logEntry, levels, chalkMap)
   const minLevel = getFromCache(logEntry.namespace, allowedNamespaces, cacheObject)
-  if (minLevel <= logEntry.level) console.log(formatted)
+  if (minLevel && minLevel <= logEntry.level) console.log(formatted)
 }
