@@ -8,10 +8,11 @@
 
 # Tests
 /**/*spec.js
+/**/*spec.js.map
 
 # Coverage reports
 /coverage
-
+.nyc_output
 /tmp
 
 # IDE stuff
