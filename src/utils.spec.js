@@ -118,7 +118,7 @@ describe('Check cache', () => {
 })
 
 describe('Check formatter', () => {
-  const regex = /\[([0-9]{2}):([0-9]{2}):([0-9]{2})\.([0-9]{3}) ([0-9]{2})\/([0-9]{2})\/([0-9]{4}) UTC([+-])([0-9]{2})] ([A-z/]+):([a-z ]+) - (.*)/
+  const regex = /\[([0-9]{2}):([0-9]{2}):([0-9]{2})\.([0-9]{3}) ([0-9]{2})\/([0-9]{2})\/([0-9]{4}) UTC([+-])([0-9]{2})] ([a-z ]+):([A-z/]+) - (.*)/
   it('test formatter with warn', () => {
     const logEntry = {
       namespace: 'test/test',
@@ -128,7 +128,7 @@ describe('Check formatter', () => {
     }
     const formatted = formatter(logEntry, levels)
     assert(regex.test(formatted))
-    const [ , hours, minutes, seconds, milliseconds, day, month, year, UTCSign, UTCOffset, namespace, level, message ] = regex.exec(formatted)
+    const [ , hours, minutes, seconds, milliseconds, day, month, year, UTCSign, UTCOffset, level, namespace, message ] = regex.exec(formatted)
     assert.equal(parseInt(hours), logEntry.date.getHours())
     assert.equal(parseInt(minutes), logEntry.date.getMinutes())
     assert.equal(parseInt(seconds), logEntry.date.getSeconds())

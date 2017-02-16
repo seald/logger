@@ -93,7 +93,7 @@ export const formatter = (logEntry, levels, chalkMap = false) => {
   const { namespace, date, level, message } = logEntry
   const offset = padStart(Math.abs(date.getTimezoneOffset() / (-60)), 2, '0')
   const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(date.getSeconds(), 2, '0')}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(date.getMonth() + 1, 2, '0')}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : ''}${offset}`
-  const formattedMessage = `${namespace}:${padEnd(levels[ level ], 5)} - ${message}`
+  const formattedMessage = `${padEnd(levels[ level ], 5)}:${namespace} - ${message}`
   if (chalkMap) return `[${chalk.gray(formattedDate)}] ${chalk[ chalkMap[ [ levels[ level ] ] ] ](formattedMessage)}`
   else return `[${formattedDate}] ${formattedMessage}`
 }
