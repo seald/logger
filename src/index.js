@@ -30,7 +30,7 @@ const cache = {}
 const logger = (level, namespace) => (...messages) => {
   let message
   try {
-    message = messages.map(_message => _message.toString()).join(' ')
+    message = messages.map(_message => String(_message)).join(' ')
   } catch (error) {
     level = 2
     message = `Couldn't output log because ${error.message} at ${error.stack}`
