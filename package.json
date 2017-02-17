@@ -1,6 +1,6 @@
 {
   "name": "@seald/logger",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "jsnext:main": "src/index.js",
   "main": "lib/index.js",
