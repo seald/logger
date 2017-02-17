@@ -18,7 +18,7 @@ const chalkMap = {
 
 const history = new Array(10000)
 
-const allowedNamespaces = getAllowedNamespaces(process.env.DEBUG_NAMESPACES || '', levels, 1)
+const allowedNamespaces = getAllowedNamespaces('*:info,' + process.env.DEBUG_NAMESPACES || '', levels, 1)
 const cache = {}
 
 /**
