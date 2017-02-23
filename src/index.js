@@ -38,7 +38,7 @@ const logger = (level, namespace) => (...messages) => {
           return String(_message)
         case 'object':
           if (_message instanceof Error) {
-            return `${Object.entries(_message).reduce((accumulator, [ key, value ]) => accumulator + `${key}: ${value}`, '')} ${_message.stack}`
+            return `${Object.keys(_message).reduce((accumulator, key) => accumulator + `${key}: ${_message[key]}`, '')} ${_message.stack}`
           } else return JSON.stringify(_message, null, 2)
         case 'boolean':
           return String(_message)
