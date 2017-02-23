@@ -30,7 +30,28 @@ const cache = {}
 const logger = (level, namespace) => (...messages) => {
   let message
   try {
-    message = messages.map(_message => typeof _message === 'string' ? _message : JSON.stringify(_message)).join(' ')
+    message = messages.map(_message => {
+      switch (typeof _message) {
+        case 'string':
+          return _message
+        case 'number':
+          return String(_message)
+        case 'object':
+          if (_message instanceof Error) {
+            return `${Object.entries(_message).reduce((accumulator, [ key, value ]) => accumulator + `${key}: ${value}`, '')} ${_message.stack}`
+          } else return JSON.stringify(_message, null, 2)
+        case 'boolean':
+          return String(_message)
+        case 'symbol':
+          return _message.toString()
+        case 'undefined':
+          return 'undefined'
+        case 'function':
+          return _message.toString()
+        default:
+          return JSON.stringify(_message)
+      }
+    }).join(' ')
   } catch (error) {
     level = 2
     message = `Couldn't output log because ${error.message} at ${error.stack}`
