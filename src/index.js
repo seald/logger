@@ -1,4 +1,4 @@
-import { formatter, printer, getAllowedNamespaces } from './utils'
+import { formatter, getAllowedNamespaces, printer } from './utils'
 
 const levels = [
   'debug',
@@ -17,8 +17,14 @@ const chalkMap = {
 
 const history = new Array(10000)
 
-const allowedNamespaces = getAllowedNamespaces('*:info,' + process.env.DEBUG_NAMESPACES || '', levels, 1)
+let allowedNamespaces
 const cache = {}
+
+export const setLogLevel = (logLevel) => {
+  allowedNamespaces = getAllowedNamespaces(logLevel, levels, 1)
+}
+
+setLogLevel('*:info,' + (process.env.LOG_LEVEL || process.env.DEBUG_NAMESPACES || process.env.DEBUG || ''))
 
 /**
  *
