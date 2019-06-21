@@ -2,47 +2,50 @@
   "name": "@seald/logger",
   "version": "0.1.3",
   "description": "",
-  "jsnext:main": "src/index.js",
+  "module": "src/index.js",
   "main": "lib/index.js",
+  "files": [
+    "/lib/**",
+    "/src/**"
+  ],
   "publishConfig": {
     "registry": "https://nexus.tardis.seald.io/repository/npm-hosted"
   },
   "scripts": {
     "pretest": "npm run build && standard",
-    "test": "mocha --require source-map-support/register --timeout 15000 $(find lib -name '*.spec.js')",
+    "test": "mocha --require source-map-support/register --timeout 15000 \"./lib/**/*.spec.js\"",
+    "test-report": "mocha --require source-map-support/register --reporter mocha-multi-reporters --reporter-options configFile=./mochaReportConfig.json \"./lib/**/*.spec.js\"",
     "prebuild": "rm -rf lib/",
     "build": "babel src --out-dir lib --source-maps",
     "prepublish": "npm run build",
     "precoverage": "rm -rf coverage/",
-    "coverage": "nyc npm test"
+    "coverage": "nyc npm run test-report"
   },
   "repository": {
     "type": "git",
     "url": "https://gitlab.tardis.seald.io/seald/logger.git"
   },
-  "author": "",
+  "author": "Seald Team",
   "license": "UNLICENSED",
   "standard": {
-    "parser": "babel-eslint"
+    "ignore": [
+      "lib/**"
+    ]
   },
   "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-eslint": "^7.1.1",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "babel-plugin-transform-async-to-generator": "^6.22.0",
-    "babel-plugin-transform-builtin-extend": "^1.1.2",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
-    "eslint": "^3.15.0",
-    "eslint-config-standard": "^6.2.1",
-    "eslint-plugin-standard": "^2.0.1",
-    "mocha": "^3.2.0",
-    "nyc": "^10.1.2",
-    "source-map-support": "^0.4.11",
-    "standard": "^8.6.0"
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^6.1.4",
+    "mocha-junit-reporter": "^1.23.0",
+    "mocha-multi-reporters": "^1.1.7",
+    "nyc": "^14.1.1",
+    "source-map-support": "^0.5.12",
+    "standard": "^12.0.1"
   },
   "dependencies": {
-    "chalk": "^1.1.3"
+    "chalk": "^2.4.2"
   }
 }

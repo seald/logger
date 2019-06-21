@@ -1,5 +1,4 @@
-'use strict'
-import {formatter, printer, getAllowedNamespaces} from './utils'
+import { formatter, printer, getAllowedNamespaces } from './utils'
 
 const levels = [
   'debug',

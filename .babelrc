@@ -1,16 +1,13 @@
 {
-  "plugins": [
-    "transform-es2015-modules-commonjs",
+  "presets": [
     [
-      "babel-plugin-transform-builtin-extend",
+      "@babel/preset-env",
       {
-        "globals": [
-          "Error",
-          "Array"
-        ]
+        "targets": {
+          "node": "8"
+        },
+        "useBuiltIns": false
       }
-    ],
-    "syntax-async-functions",
-    "transform-async-to-generator"
+    ]
   ]
 }

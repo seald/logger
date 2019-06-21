@@ -1,7 +1,7 @@
-'use strict'
-/* global describe, it */
-import {getAllowedNamespaces, getLevel, getFromCache, formatter} from './utils'
-import {assert} from 'chai'
+/* eslint-env mocha */
+
+import { getAllowedNamespaces, getLevel, getFromCache, formatter } from './utils'
+import { assert } from 'chai'
 
 const levels = [
   'debug',

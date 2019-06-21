@@ -1,4 +1,4 @@
-image: node:latest
+image: node:10
 
 variables:
   CI_USER: $CI_USER
@@ -10,7 +10,7 @@ before_script:
   - echo "registry=https://nexus.tardis.seald.io/repository/npm/" >> .npmrc
   - echo "@seald:registry=https://nexus.tardis.seald.io/repository/npm-hosted/" >> .npmrc
   - echo "always-auth=true" >> .npmrc
-  - npm install --silent
+  - npm ci --silent
 
 test:
   stage: test
@@ -18,7 +18,12 @@ test:
     paths:
     - ~/.npm
   script:
+    - npm run pretest
     - npm run coverage
+  artifacts:
+    reports:
+      junit: report.xml
+    expire_in: 1 week
 
 
 deploy:
