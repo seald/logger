@@ -71,7 +71,7 @@ export const getFromCache = (namespace, allowedNamespaces, cacheObject) => {
  * @param {string} [padChar = ' ']
  */
 const padStart = (string, length, padChar = ' ') =>
-(string.toString().length < length ? padChar.repeat(length - string.toString().length) : '') + string.toString()
+  (string.toString().length < length ? padChar.repeat(length - string.toString().length) : '') + string.toString()
 
 /**
  * Pads string at the end of the string with given padChar (must be 1 character) to reach wanted length
@@ -80,7 +80,7 @@ const padStart = (string, length, padChar = ' ') =>
  * @param {string} [padChar = ' ']
  */
 const padEnd = (string, length, padChar = ' ') =>
-string.toString() + (string.toString().length < length ? padChar.repeat(length - string.toString().length) : '')
+  string.toString() + (string.toString().length < length ? padChar.repeat(length - string.toString().length) : '')
 
 /**
  *
