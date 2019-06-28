@@ -16,7 +16,7 @@ test:
   stage: test
   cache:
     paths:
-    - ~/.npm
+    - /root/.npm
   script:
     - npm run pretest
     - npm run coverage
