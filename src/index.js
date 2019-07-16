@@ -7,15 +7,14 @@ const levels = [
   'error'
 ]
 
-const chalkMap = {
+export const chalkMap = {
   date: 'gray',
   debug: 'cyan',
   info: 'green',
   warn: 'yellow',
   error: 'red'
 }
-
-const history = new Array(10000)
+export const history = new Array(10000)
 
 let allowedNamespaces
 const cache = {}

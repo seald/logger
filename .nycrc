@@ -3,7 +3,8 @@
     "lib/**/*.js"
   ],
   "exclude": [
-    "lib/**/*.spec.js"
+    "lib/**/*.spec.js",
+    "lib/indexTests/**/*"
   ],
   "all": true,
   "report-dir": "./coverage",

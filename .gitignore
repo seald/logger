@@ -13,3 +13,5 @@ tmp/
 .nyc_output/
 lib/
 report.xml
+
+.vscode/
