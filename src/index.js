@@ -6,8 +6,7 @@ const levels = [
   'warn',
   'error'
 ]
-
-export const chalkMap = {
+const chalkMap = {
   date: 'gray',
   debug: 'cyan',
   info: 'green',
