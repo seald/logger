@@ -2,7 +2,9 @@
 import { spawn } from 'child_process'
 import path from 'path'
 import { assert } from 'chai'
-import { setHistorySize, flushToString, history } from './index.js'
+import makeLogger, { setHistorySize, flushToString } from './index.js'
+
+const log = makeLogger('log-level-test')
 
 const nodeCommand = process.env.NODE_COMMAND || 'node'
 
@@ -125,6 +127,7 @@ describe('spawned tests', () => {
         assert.include(linesErr[1], '')
       })
     })
+
     describe('test environment DEBUG ', () => {
       it('test DEBUG scoped namespace error Level', async () => {
         const { stdout, stderr } = await spawnFile({ DEBUG: 'log-level-test:debug' }, 'logLevel.js')
@@ -330,7 +333,8 @@ describe('spawned tests', () => {
         assert.include(linesErr[1], '')
       })
     })
-    describe('test environment undefined', () => {
+
+    describe('test environment when undefined', () => {
       it('test undefined', async () => {
         const { stdout, stderr } = await spawnFile({ }, 'logLevel.js')
         const lines = stdout.split('\n')
@@ -346,49 +350,55 @@ describe('spawned tests', () => {
       })
     })
   })
-  describe('test logger crash when type object given', () => {
-    it('test JSON.stringify when crashed', async () => {
-      const { stdout } = await spawnFile({ }, 'logObjectTypes.js')
-      assert.include(stdout, 'Couldn\'t output log because tu ne me stringifieras pas')
-    })
-    it('test other type objects', async () => {
-      const { stdout } = await spawnFile({ }, 'logObjectTypes.js')
-      console.log(stdout)
-    })
+
+  it('test logger when crashed with controlled object type', async () => {
+    const { stdout } = await spawnFile({ }, 'logControlledObject.js')
+    const index = stdout.indexOf('Couldn\'t output log because tu ne me stringifieras pas')
+    assert.notEqual(index, -1)
+  })
+  it('test logger when crashed with error type ', async () => {
+    const { stderr } = await spawnFile({ }, 'logErrorType.js')
+    const index = stderr.indexOf('Error: error')
+    assert.notEqual(index, -1)
+  })
+  it('test type objects', async () => {
+    const { stdout } = await spawnFile({ }, 'logAllTypes.js')
+    assert.include(stdout, 'test')
+    assert.include(stdout, '1')
+    assert.include(stdout, '{\n  "foo": "bar"\n}')
+    assert.include(stdout, 'null')
+    assert.include(stdout, 'true')
+    assert.include(stdout, 'Symbol(symbol)')
+    assert.include(stdout, '() => {\n  console.log(\'test\');\n}')
+  })
+  it('test type objects with multiple arguments', async () => {
+    const { stdout } = await spawnFile({ }, 'logMultipleArgs.js')
+    const index = stdout.indexOf('test test test')
+    assert.notEqual(index, -1)
   })
 })
 
 describe('test setHistorySize', () => {
   it('size less than history length', async () => {
     const newSize = 50
+    const history = new Array(10000)
+    setHistorySize(newSize)
+    assert.notStrictEqual(history.length, newSize)
+  })
+  it('size is equal history length', async () => {
+    const newSize = 10000
+    const history = new Array(10000)
     setHistorySize(newSize)
     assert.equal(history.length, newSize)
-  })
-  it('size equal history length', async () => {
-    const newSizeHistory = 10000
-    setHistorySize(newSizeHistory)
-    assert.equal(history.length, newSizeHistory)
   })
 })
 
 describe('test flushToString', () => {
   it('flushToString is formatting items and joining with new line ', async () => {
-    history[0] = {
-      namespace: 'test/test',
-      date: new Date(),
-      level: 2,
-      message: 'testMessage'
-    }
-    history[1] = {
-      namespace: 'test/test2',
-      date: new Date(),
-      level: 2,
-      message: 'testMessage2'
-    }
+    log.info('this should be info level')
     const result = flushToString()
     const lines = result.split('\n')
-    assert.strictEqual(lines.length, 2)
-    assert.include(lines[0], 'testMessage')
-    assert.include(lines[1], 'testMessage2')
+    assert.strictEqual(lines.length, 1)
+    assert.include(lines[0], 'this should be info level')
   })
 })

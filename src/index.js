@@ -13,7 +13,7 @@ const chalkMap = {
   warn: 'yellow',
   error: 'red'
 }
-export const history = new Array(10000)
+const history = new Array(10000)
 
 let allowedNamespaces
 const cache = {}

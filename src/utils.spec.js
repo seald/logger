@@ -143,9 +143,9 @@ describe('Check padEnd', () => {
   })
 })
 
-describe('Check formatter', () => {
+describe('Check formatter when the Date object is mocked and set to a given time with negative getTimeZone', () => {
   const regex = /\[([0-9]{2}):([0-9]{2}):([0-9]{2})\.([0-9]{3}) ([0-9]{2})\/([0-9]{2})\/([0-9]{4}) UTC([+-])([0-9]{2})] ([a-z ]+):([A-z/]+) - (.*)/
-  it('test formatter with warn when getTimeZone negatif', () => {
+  it('test formatter with warn ', () => {
     MockDate.set(new Date(), -60)
     const logEntry = {
       namespace: 'test/test',
@@ -163,14 +163,15 @@ describe('Check formatter', () => {
     assert.equal(parseInt(day), logEntry.date.getDate())
     assert.equal(parseInt(month), logEntry.date.getMonth() + 1)
     assert.equal(parseInt(year), logEntry.date.getFullYear())
-    assert.equal(UTCSign, logEntry.date.getTimezoneOffset() <= 0 ? '+' : '-')
+    assert.equal(UTCSign, '+')
     assert.equal(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
     assert.equal(namespace, logEntry.namespace)
     assert.equal(level, 'warn ')
     assert.equal(message, message)
     MockDate.reset()
   })
-  it('test formatter with warn when getTimeZone positif', () => {
+
+  it('test formatter with warn when the Date is mocked and set to a given time with postive getTimeZone', () => {
     MockDate.set(new Date(), 60)
     const logEntry = {
       namespace: 'test/test',
@@ -188,7 +189,7 @@ describe('Check formatter', () => {
     assert.equal(parseInt(day), logEntry.date.getDate())
     assert.equal(parseInt(month), logEntry.date.getMonth() + 1)
     assert.equal(parseInt(year), logEntry.date.getFullYear())
-    assert.equal(UTCSign, logEntry.date.getTimezoneOffset() <= 0 ? '+' : '-')
+    assert.equal(UTCSign, '-')
     assert.equal(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
     assert.equal(namespace, logEntry.namespace)
     assert.equal(level, 'warn ')
@@ -251,7 +252,6 @@ describe('Check formatter', () => {
       assert.equal(logEntry.level, 0)
     })
     it('test printer level 3', () => {
-      // given
       const logEntry = {
         namespace: 'test/*',
         message: 'testMessage',
@@ -263,9 +263,7 @@ describe('Check formatter', () => {
         levels,
         1
       )
-      // when
       printer(logEntry, allowedNamespaces, levels, chalkMap)
-      // then
       assert.equal(logEntry.level, 3)
     })
   })
