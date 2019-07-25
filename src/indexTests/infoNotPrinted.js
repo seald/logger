@@ -1,10 +1,10 @@
 import { printer, getAllowedNamespaces } from '../utils'
 const levels = ['debug', 'info', 'warn', 'error']
 const logEntry = {
-  namespace: 'test/*',
-  message: 'warnMessage',
+  namespace: 'test',
+  message: 'debugMessage',
   date: new Date(),
-  level: 2
+  level: 0
 }
 const chalkMap = {
   date: 'gray',
@@ -14,7 +14,7 @@ const chalkMap = {
   error: 'red'
 }
 const allowedNamespaces = getAllowedNamespaces(
-  'test/*:warn',
+  'test/test: info',
   levels,
   1
 )

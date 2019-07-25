@@ -34,26 +34,37 @@ const logger = (level, namespace) => (...messages) => {
   let message
   try {
     message = messages.map(_message => {
-      switch (typeof _message) {
-        case 'string':
-          return _message
-        case 'number':
-          return String(_message)
-        case 'object':
-          if (_message instanceof Error) {
-            return `${Object.keys(_message).reduce((accumulator, key) => accumulator + `${key}: ${_message[key]}`, '')} ${_message.stack}`
-          } else return JSON.stringify(_message, null, 2)
-        case 'boolean':
-          return String(_message)
-        case 'symbol':
-          return _message.toString()
-        case 'undefined':
-          return 'undefined'
-        case 'function':
-          return _message.toString()
-        default:
-          return JSON.stringify(_message)
-      }
+      // switch (typeof _message) {
+      //   case 'string':
+      //     return _message
+      //   case 'number':
+      //     return String(_message)
+      //   case 'object':
+      //     if (_message instanceof Error) {
+      //       return `${Object.keys(_message).reduce((accumulator, key) => accumulator + `${key}: ${_message[key]}`, '')} ${_message.stack}`
+      //     } else return JSON.stringify(_message, null, 2)
+      //   case 'boolean':
+      //     return String(_message)
+      //   case 'symbol':
+      //     return _message.toString()
+      //   case 'undefined':
+      //     return 'undefined'
+      //   case 'function':
+      //     return _message.toString()
+      //   default:
+      //     return JSON.stringify(_message)
+      // }
+      const typeOfMessage = typeof _message
+      if (typeOfMessage === 'string') return _message
+      else if (typeOfMessage === 'number') return String(_message)
+      else if (typeOfMessage === 'object') {
+        if (_message instanceof Error) return `${Object.keys(_message).reduce((accumulator, key) => accumulator + `${key}: ${_message[key]}`, '')} ${_message.stack}`
+        else return JSON.stringify(_message, null, 2)
+      } else if (typeOfMessage === 'boolean') return String(_message)
+      else if (typeOfMessage === 'symbol') return _message.toString()
+      else if (typeOfMessage === 'undefined') return 'undefined'
+      else if (typeOfMessage === 'function') return _message.toString()
+      else return JSON.stringify(_message)
     }).join(' ')
   } catch (error) {
     level = 2

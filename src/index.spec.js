@@ -8,7 +8,7 @@ const log = makeLogger('log-level-test')
 
 const nodeCommand = process.execPath
 
-const spawnFile = async (env, file) => {
+export const spawnFile = async (env, file) => {
   const subprocess = spawn(nodeCommand, [path.join(__dirname, './indexTests', file)], { env })
   const end = new Promise((resolve, reject) => {
     subprocess.on('exit', (code) => {
@@ -342,7 +342,13 @@ describe('spawned tests', () => {
     })
     it('test logger when crashed with error type ', async () => {
       const { stderr } = await spawnFile({ }, 'logErrorType.js')
-      assert.include(stderr, 'Error: error')
+      assert.include(stderr, 'error:log-error-type')
+      assert.include(stderr, 'Error message')
+      assert.include(stderr, 'code: MY_CODE')
+    })
+    it('test logger when crashed with undefined', async () => {
+      const { stdout } = await spawnFile({ }, 'logUndefined.js')
+      assert.include(stdout, '')
     })
     it('test type objects', async () => {
       const { stdout } = await spawnFile({ }, 'logAllTypes.js')
@@ -362,34 +368,31 @@ describe('spawned tests', () => {
 })
 
 describe('test setHistorySize and flushToString', () => {
-  it('test setHistorySize with less flushToString output size', async () => {
+  it('test setHistorySize with fewer logs than historySize', async () => {
     setHistorySize(5)
-    log.debug('this should be debug level')
-    log.debug('this should be debug level')
-    log.debug('this should be debug level')
+    log.debug('this should be debug level 1')
+    log.debug('this should be debug level 2')
+    log.debug('this should be debug level 3')
     const result = flushToString()
     const lines = result.split('\n')
     assert.strictEqual(lines.length, 3)
-    assert.include(lines[0], 'this should be debug level')
-    assert.include(lines[1], 'this should be debug level')
-    assert.include(lines[2], 'this should be debug level')
+    assert.include(lines[0], 'this should be debug level 1')
+    assert.include(lines[1], 'this should be debug level 2')
+    assert.include(lines[2], 'this should be debug level 3')
   })
   it('test setHistorySize with equal flushToString output size', async () => {
-    setHistorySize(6)
-    log.debug('this should be debug level')
-    log.debug('this should be debug level')
-    log.debug('this should be debug level')
-    log.debug('this should be debug level')
-    log.debug('this should be debug level')
-    log.debug('this should be debug level')
+    setHistorySize(5)
+    log.debug('this should be debug level 4')
+    log.debug('this should be debug level 5')
+    log.debug('this should be debug level 6')
+
     const result2 = flushToString()
     const lines2 = result2.split('\n')
-    assert.strictEqual(lines2.length, 6)
-    assert.include(lines2[0], 'this should be debug level')
-    assert.include(lines2[1], 'this should be debug level')
-    assert.include(lines2[2], 'this should be debug level')
-    assert.include(lines2[3], 'this should be debug level')
-    assert.include(lines2[4], 'this should be debug level')
-    assert.include(lines2[5], 'this should be debug level')
+    assert.strictEqual(lines2.length, 5)
+    assert.include(lines2[0], 'this should be debug level 2')
+    assert.include(lines2[1], 'this should be debug level 3')
+    assert.include(lines2[2], 'this should be debug level 4')
+    assert.include(lines2[3], 'this should be debug level 5')
+    assert.include(lines2[4], 'this should be debug level 6')
   })
 })

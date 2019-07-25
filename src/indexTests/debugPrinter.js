@@ -14,7 +14,7 @@ const chalkMap = {
   error: 'red'
 }
 const allowedNamespaces = getAllowedNamespaces(
-  '*:error, test/*:warn, test/test: debug, test2/test:info',
+  'test/test: debug',
   levels,
   1
 )

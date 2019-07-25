@@ -1,52 +1,27 @@
 /* eslint-env mocha */
 
 import { getAllowedNamespaces, getLevel, getFromCache, formatter, padStart, padEnd } from './utils'
-import { spawn } from 'child_process'
-import path from 'path'
+import { spawnFile } from './index.spec'
 import { assert } from 'chai'
 const MockDate = require('mockdate')
 const levels = ['debug', 'info', 'warn', 'error']
 const chalk = require('chalk')
 
-const nodeCommand = process.execPath
-const spawnPrinter = async (file) => {
-  const subprocess = spawn(nodeCommand, [path.join(__dirname, './indexTests', file)])
-  const end = new Promise((resolve, reject) => {
-    subprocess.on('exit', (code) => {
-      if (code === 0) resolve()
-      else reject(new Error('exit code is ' + code))
-    })
-    subprocess.on('error', (error) => {
-      reject(error)
-    })
-  })
-  let stdout = ''
-  subprocess.stdout.on('data', (data) => {
-    stdout += data
-  })
-  let stderr = ''
-  subprocess.stderr.on('data', (data) => {
-    stderr += data
-  })
-  await end
-  return { stdout, stderr }
-}
-
 describe('Get allowed namespaces', () => {
   it('* only test', () => {
-    assert.deepEqual(getAllowedNamespaces('*', levels, 1), [{ namespace: [''], level: 1 }])
+    assert.deepStrictEqual(getAllowedNamespaces('*', levels, 1), [{ namespace: [''], level: 1 }])
   })
 
   it('* with level', () => {
-    assert.deepEqual(getAllowedNamespaces('*:error', levels, 1), [{ namespace: [''], level: 3 }])
+    assert.deepStrictEqual(getAllowedNamespaces('*:error', levels, 1), [{ namespace: [''], level: 3 }])
   })
 
   it('* after a subNamespace', () => {
-    assert.deepEqual(getAllowedNamespaces('test/*:error', levels, 1), [{ namespace: ['test'], level: 3 }])
+    assert.deepStrictEqual(getAllowedNamespaces('test/*:error', levels, 1), [{ namespace: ['test'], level: 3 }])
   })
 
   it('test with /', () => {
-    assert.deepEqual(getAllowedNamespaces('test/test:error', levels, 1), [
+    assert.deepStrictEqual(getAllowedNamespaces('test/test:error', levels, 1), [
       {
         namespace: ['test', 'test'],
         level: 3
@@ -55,7 +30,7 @@ describe('Get allowed namespaces', () => {
   })
 
   it('test with unknown levels', () => {
-    assert.deepEqual(getAllowedNamespaces('test/test:fuck, test:info,test/test/test:warn', levels, 1), [
+    assert.deepStrictEqual(getAllowedNamespaces('test/test:fuck, test:info,test/test/test:warn', levels, 1), [
       {
         namespace: ['test', 'test'],
         level: 1
@@ -72,7 +47,7 @@ describe('Get allowed namespaces', () => {
   })
 
   it('test with multiple rules', () => {
-    assert.deepEqual(getAllowedNamespaces('test/test:error, test:info,test/test/test:warn', levels, 1), [
+    assert.deepStrictEqual(getAllowedNamespaces('test/test:error, test:info,test/test/test:warn', levels, 1), [
       {
         namespace: ['test', 'test'],
         level: 3
@@ -97,7 +72,7 @@ describe('Get levels', () => {
   )
 
   it('assert allowed namespaces is what is to be expected', () => {
-    assert.deepEqual(allowedNamespaces, [
+    assert.deepStrictEqual(allowedNamespaces, [
       { namespace: [''], level: 3 },
 
       { namespace: ['test'], level: 2 },
@@ -110,31 +85,31 @@ describe('Get levels', () => {
   })
 
   it('get level for default behaviour', () => {
-    assert.equal(getLevel('test3', allowedNamespaces), 3)
+    assert.strictEqual(getLevel('test3', allowedNamespaces), 3)
   })
 
   it('get level for test', () => {
-    assert.equal(getLevel('test', allowedNamespaces), 1)
+    assert.strictEqual(getLevel('test', allowedNamespaces), 1)
   })
 
   it('get level for test/test', () => {
-    assert.equal(getLevel('test/test', allowedNamespaces), 0)
+    assert.strictEqual(getLevel('test/test', allowedNamespaces), 0)
   })
 
   it('get level for test2', () => {
-    assert.equal(getLevel('test2', allowedNamespaces), 3)
+    assert.strictEqual(getLevel('test2', allowedNamespaces), 3)
   })
 
   it('get level for test2/test', () => {
-    assert.equal(getLevel('test2/test', allowedNamespaces), 1)
+    assert.strictEqual(getLevel('test2/test', allowedNamespaces), 1)
   })
 
   it('get level for test2/test2', () => {
-    assert.equal(getLevel('test2/test2', allowedNamespaces), 1)
+    assert.strictEqual(getLevel('test2/test2', allowedNamespaces), 1)
   })
 
   it('get level for t', () => {
-    assert.equal(getLevel('t', allowedNamespaces), 1)
+    assert.strictEqual(getLevel('t', allowedNamespaces), 1)
   })
 })
 
@@ -142,19 +117,19 @@ describe('Check cache', () => {
   const allowedNamespaces = getAllowedNamespaces('*:error', levels, 1)
   const cache = {}
   it('assert allowed namespaces is what is to be expected', () => {
-    assert.deepEqual(allowedNamespaces, [{ namespace: [''], level: 3 }])
+    assert.deepStrictEqual(allowedNamespaces, [{ namespace: [''], level: 3 }])
   })
 
   it('get level for default behaviour', () => {
-    assert.equal(getFromCache('test3', allowedNamespaces, cache), 3)
+    assert.strictEqual(getFromCache('test3', allowedNamespaces, cache), 3)
   })
 
   it('check cache', () => {
-    assert.deepEqual(cache, { test3: 3 })
+    assert.deepStrictEqual(cache, { test3: 3 })
   })
 
   it('get level for default behaviour', () => {
-    assert.equal(getFromCache('test3', allowedNamespaces, cache), 3)
+    assert.strictEqual(getFromCache('test3', allowedNamespaces, cache), 3)
   })
 })
 
@@ -200,18 +175,18 @@ describe('Check formatter when the Date object is mocked', () => {
     const formatted = formatter(logEntry, levels)
     assert(regex.test(formatted))
     const [, hours, minutes, seconds, milliseconds, day, month, year, UTCSign, UTCOffset, level, namespace, message] = regex.exec(formatted)
-    assert.equal(parseInt(hours), logEntry.date.getHours())
-    assert.equal(parseInt(minutes), logEntry.date.getMinutes())
-    assert.equal(parseInt(seconds), logEntry.date.getSeconds())
-    assert.equal(parseInt(milliseconds), logEntry.date.getMilliseconds())
-    assert.equal(parseInt(day), logEntry.date.getDate())
-    assert.equal(parseInt(month), logEntry.date.getMonth() + 1)
-    assert.equal(parseInt(year), logEntry.date.getFullYear())
-    assert.equal(UTCSign, '+')
-    assert.equal(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
-    assert.equal(namespace, logEntry.namespace)
-    assert.equal(level, 'warn ')
-    assert.equal(message, message)
+    assert.strictEqual(parseInt(hours), logEntry.date.getHours())
+    assert.strictEqual(parseInt(minutes), logEntry.date.getMinutes())
+    assert.strictEqual(parseInt(seconds), logEntry.date.getSeconds())
+    assert.strictEqual(parseInt(milliseconds), logEntry.date.getMilliseconds())
+    assert.strictEqual(parseInt(day), logEntry.date.getDate())
+    assert.strictEqual(parseInt(month), logEntry.date.getMonth() + 1)
+    assert.strictEqual(parseInt(year), logEntry.date.getFullYear())
+    assert.strictEqual(UTCSign, '+')
+    assert.strictEqual(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
+    assert.strictEqual(namespace, logEntry.namespace)
+    assert.strictEqual(level, 'warn ')
+    assert.strictEqual(message, message)
     MockDate.reset()
   })
 
@@ -226,24 +201,24 @@ describe('Check formatter when the Date object is mocked', () => {
     const formatted = formatter(logEntry, levels)
     assert(regex.test(formatted))
     const [, hours, minutes, seconds, milliseconds, day, month, year, UTCSign, UTCOffset, level, namespace, message] = regex.exec(formatted)
-    assert.equal(parseInt(hours), logEntry.date.getHours())
-    assert.equal(parseInt(minutes), logEntry.date.getMinutes())
-    assert.equal(parseInt(seconds), logEntry.date.getSeconds())
-    assert.equal(parseInt(milliseconds), logEntry.date.getMilliseconds())
-    assert.equal(parseInt(day), logEntry.date.getDate())
-    assert.equal(parseInt(month), logEntry.date.getMonth() + 1)
-    assert.equal(parseInt(year), logEntry.date.getFullYear())
-    assert.equal(UTCSign, '-')
-    assert.equal(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
-    assert.equal(namespace, logEntry.namespace)
-    assert.equal(level, 'warn ')
-    assert.equal(message, message)
+    assert.strictEqual(parseInt(hours), logEntry.date.getHours())
+    assert.strictEqual(parseInt(minutes), logEntry.date.getMinutes())
+    assert.strictEqual(parseInt(seconds), logEntry.date.getSeconds())
+    assert.strictEqual(parseInt(milliseconds), logEntry.date.getMilliseconds())
+    assert.strictEqual(parseInt(day), logEntry.date.getDate())
+    assert.strictEqual(parseInt(month), logEntry.date.getMonth() + 1)
+    assert.strictEqual(parseInt(year), logEntry.date.getFullYear())
+    assert.strictEqual(UTCSign, '-')
+    assert.strictEqual(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
+    assert.strictEqual(namespace, logEntry.namespace)
+    assert.strictEqual(level, 'warn ')
+    assert.strictEqual(message, message)
     MockDate.reset()
   })
 })
 
 describe('Check formatter when chalkmap set to true', () => {
-  it('test formatter with chalkmap for all levels', () => {
+  it('test formatter with chalkmap for levels 0', () => {
     const chalkMap = {
       date: 'gray',
       debug: 'cyan',
@@ -257,73 +232,151 @@ describe('Check formatter when chalkmap set to true', () => {
       date: new Date(),
       level: 0
     }
+    const { date } = logEntry
+    const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
+    const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
+      date.getSeconds(),
+      2,
+      '0'
+    )}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(
+      date.getMonth() + 1,
+      2,
+      '0'
+    )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
     const formatted = formatter(logEntry, levels, chalkMap)
     const cyanLine = formatted.split('\n')
     assert.strictEqual(cyanLine.length, 1)
     assert.include(cyanLine[0], chalk.cyan('debug:test/test - debugMessage'))
-
-    const logEntry2 = {
+    assert.include(cyanLine[0], [chalk.gray(formattedDate)])
+  })
+  it('test formatter with chalkmap for level 1', () => {
+    const chalkMap = {
+      date: 'gray',
+      debug: 'cyan',
+      info: 'green',
+      warn: 'yellow',
+      error: 'red'
+    }
+    const logEntry = {
       namespace: 'test2/test',
       message: 'infoMessage',
       date: new Date(),
       level: 1
     }
-    const formatted2 = formatter(logEntry2, levels, chalkMap)
-    const greenLine = formatted2.split('\n')
+    const { date } = logEntry
+    const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
+    const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
+      date.getSeconds(),
+      2,
+      '0'
+    )}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(
+      date.getMonth() + 1,
+      2,
+      '0'
+    )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
+    const formatted = formatter(logEntry, levels, chalkMap)
+    const greenLine = formatted.split('\n')
     assert.strictEqual(greenLine.length, 1)
     assert.include(greenLine[0], chalk.green('info :test2/test - infoMessage'))
-
-    const logEntry3 = {
+    assert.include(greenLine[0], [chalk.gray(formattedDate)])
+  })
+  it('test formatter with chalkmap for level 2', () => {
+    const chalkMap = {
+      date: 'gray',
+      debug: 'cyan',
+      info: 'green',
+      warn: 'yellow',
+      error: 'red'
+    }
+    const logEntry = {
       namespace: 'test/*',
       message: 'warnMessage',
       date: new Date(),
       level: 2
     }
-    const formatted3 = formatter(logEntry3, levels, chalkMap)
-    const yellowLine = formatted3.split('\n')
+    const { date } = logEntry
+    const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
+    const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
+      date.getSeconds(),
+      2,
+      '0'
+    )}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(
+      date.getMonth() + 1,
+      2,
+      '0'
+    )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
+    const formatted = formatter(logEntry, levels, chalkMap)
+    const yellowLine = formatted.split('\n')
     assert.strictEqual(yellowLine.length, 1)
     assert.include(yellowLine[0], chalk.yellow('warn :test/* - warnMessage'))
-
-    const logEntry4 = {
+    assert.include(yellowLine[0], [chalk.gray(formattedDate)])
+  })
+  it('test formatter with chalkmap for level 3', () => {
+    const chalkMap = {
+      date: 'gray',
+      debug: 'cyan',
+      info: 'green',
+      warn: 'yellow',
+      error: 'red'
+    }
+    const logEntry = {
       namespace: '*',
       message: 'errorMessage',
       date: new Date(),
       level: 3
     }
-    const formatted4 = formatter(logEntry4, levels, chalkMap)
-    const redLine = formatted4.split('\n')
+    const { date } = logEntry
+    const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
+    const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
+      date.getSeconds(),
+      2,
+      '0'
+    )}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(
+      date.getMonth() + 1,
+      2,
+      '0'
+    )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
+    const formatted = formatter(logEntry, levels, chalkMap)
+    const redLine = formatted.split('\n')
     assert.strictEqual(redLine.length, 1)
     assert.include(redLine[0], chalk.red('error:* - errorMessage'))
+    assert.include(redLine[0], [chalk.gray(formattedDate)])
   })
 })
 
 describe('Check printer', () => {
   it('test printer debug level', async () => {
-    const { stdout } = await spawnPrinter('debugPrinter.js')
+    const { stdout } = await spawnFile({}, 'debugPrinter.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'test/test - debugMessage')
     assert.include(lines[1], '')
   })
   it('test printer info level', async () => {
-    const { stdout } = await spawnPrinter('infoPrinter.js')
+    const { stdout } = await spawnFile({}, 'infoPrinter.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'test2/test - infoMessage')
     assert.include(lines[1], '')
   })
   it('test printer warn level', async () => {
-    const { stdout } = await spawnPrinter('warnPrinter.js')
+    const { stdout } = await spawnFile({}, 'warnPrinter.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'test/* - warnMessage')
     assert.include(lines[1], '')
   })
   it('test printer error level', async () => {
-    const { stderr } = await spawnPrinter('errorPrinter.js')
+    const { stderr } = await spawnFile({}, 'errorPrinter.js')
     const lines = stderr.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], '* - errorMessage')
     assert.include(lines[1], '')
+  })
+  it('test printer with low level for its namespace', async () => {
+    const { stdout } = await spawnFile({}, 'infoNotPrinted.js')
+    const lines = stdout.split('\n')
+    assert.strictEqual(lines.length, 1)
+    assert.include(lines[0], '')
   })
 })
