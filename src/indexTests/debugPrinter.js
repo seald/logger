@@ -4,7 +4,7 @@ const logEntry = {
   namespace: 'test/test',
   message: 'debugMessage',
   date: new Date(),
-  level: 2
+  level: 0
 }
 const chalkMap = {
   date: 'gray',
