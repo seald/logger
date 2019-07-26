@@ -83,14 +83,10 @@ export const padEnd = (string, length, padChar = ' ') =>
   string.toString() + (string.toString().length < length ? padChar.repeat(length - string.toString().length) : '')
 
 /**
- *
- * @param {{namespace: string, date: Date, level: number, message: string}} logEntry
- * @param {Array.<number>} levels
- * @param {Object.<string, string>|boolean} [chalkMap = false]
- * @returns {string}
- */
-export const formatter = (logEntry, levels, chalkMap = false) => {
-  const { namespace, date, level, message } = logEntry
+   * @param date {Date}
+   * @returns {string}
+   */
+export const formatDate = date => {
   const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
   const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
     date.getSeconds(),
@@ -101,9 +97,20 @@ export const formatter = (logEntry, levels, chalkMap = false) => {
     2,
     '0'
   )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
+  return formattedDate
+}
+/**
+ *
+ * @param {{namespace: string, date: Date, level: number, message: string}} logEntry
+ * @param {Array.<number>} levels
+ * @param {Object.<string, string>|boolean} [chalkMap = false]
+ * @returns {string}
+ */
+export const formatter = (logEntry, levels, chalkMap = false) => {
+  const { namespace, date, level, message } = logEntry
   const formattedMessage = `${padEnd(levels[level], 5)}:${namespace} - ${message}`
-  if (chalkMap) return `[${chalk.gray(formattedDate)}] ${chalk[chalkMap[[levels[level]]]](formattedMessage)}`
-  else return `[${formattedDate}] ${formattedMessage}`
+  if (chalkMap) return `[${chalk.gray(formatDate(date))}] ${chalk[chalkMap[[levels[level]]]](formattedMessage)}`
+  else return `[${formatDate(date)}] ${formattedMessage}`
 }
 
 /**

@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 
-import { getAllowedNamespaces, getLevel, getFromCache, formatter, padStart, padEnd } from './utils'
+import { getAllowedNamespaces, getLevel, getFromCache, formatter, padStart, padEnd, formatDate } from './utils'
 import { spawnFile } from './index.spec'
 import { assert } from 'chai'
 const MockDate = require('mockdate')
@@ -233,21 +233,11 @@ describe('Check formatter when chalkmap set to true', () => {
       level: 0
     }
     const { date } = logEntry
-    const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
-    const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
-      date.getSeconds(),
-      2,
-      '0'
-    )}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(
-      date.getMonth() + 1,
-      2,
-      '0'
-    )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
     const formatted = formatter(logEntry, levels, chalkMap)
     const cyanLine = formatted.split('\n')
     assert.strictEqual(cyanLine.length, 1)
     assert.include(cyanLine[0], chalk.cyan('debug:test/test - debugMessage'))
-    assert.include(cyanLine[0], [chalk.gray(formattedDate)])
+    assert.include(cyanLine[0], [chalk.gray(formatDate(date))])
   })
   it('test formatter with chalkmap for level 1', () => {
     const chalkMap = {
@@ -264,21 +254,11 @@ describe('Check formatter when chalkmap set to true', () => {
       level: 1
     }
     const { date } = logEntry
-    const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
-    const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
-      date.getSeconds(),
-      2,
-      '0'
-    )}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(
-      date.getMonth() + 1,
-      2,
-      '0'
-    )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
     const formatted = formatter(logEntry, levels, chalkMap)
     const greenLine = formatted.split('\n')
     assert.strictEqual(greenLine.length, 1)
     assert.include(greenLine[0], chalk.green('info :test2/test - infoMessage'))
-    assert.include(greenLine[0], [chalk.gray(formattedDate)])
+    assert.include(greenLine[0], [chalk.gray(formatDate(date))])
   })
   it('test formatter with chalkmap for level 2', () => {
     const chalkMap = {
@@ -295,21 +275,11 @@ describe('Check formatter when chalkmap set to true', () => {
       level: 2
     }
     const { date } = logEntry
-    const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
-    const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
-      date.getSeconds(),
-      2,
-      '0'
-    )}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(
-      date.getMonth() + 1,
-      2,
-      '0'
-    )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
     const formatted = formatter(logEntry, levels, chalkMap)
     const yellowLine = formatted.split('\n')
     assert.strictEqual(yellowLine.length, 1)
     assert.include(yellowLine[0], chalk.yellow('warn :test/* - warnMessage'))
-    assert.include(yellowLine[0], [chalk.gray(formattedDate)])
+    assert.include(yellowLine[0], [chalk.gray(formatDate(date))])
   })
   it('test formatter with chalkmap for level 3', () => {
     const chalkMap = {
@@ -326,21 +296,11 @@ describe('Check formatter when chalkmap set to true', () => {
       level: 3
     }
     const { date } = logEntry
-    const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
-    const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
-      date.getSeconds(),
-      2,
-      '0'
-    )}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(
-      date.getMonth() + 1,
-      2,
-      '0'
-    )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
     const formatted = formatter(logEntry, levels, chalkMap)
     const redLine = formatted.split('\n')
     assert.strictEqual(redLine.length, 1)
     assert.include(redLine[0], chalk.red('error:* - errorMessage'))
-    assert.include(redLine[0], [chalk.gray(formattedDate)])
+    assert.include(redLine[0], [chalk.gray(formatDate(date))])
   })
 })
 
@@ -350,33 +310,33 @@ describe('Check printer', () => {
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'test/test - debugMessage')
-    assert.include(lines[1], '')
+    assert.strictEqual(lines[1], '')
   })
   it('test printer info level', async () => {
     const { stdout } = await spawnFile({}, 'infoPrinter.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'test2/test - infoMessage')
-    assert.include(lines[1], '')
+    assert.strictEqual(lines[1], '')
   })
   it('test printer warn level', async () => {
     const { stdout } = await spawnFile({}, 'warnPrinter.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'test/* - warnMessage')
-    assert.include(lines[1], '')
+    assert.strictEqual(lines[1], '')
   })
   it('test printer error level', async () => {
     const { stderr } = await spawnFile({}, 'errorPrinter.js')
     const lines = stderr.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], '* - errorMessage')
-    assert.include(lines[1], '')
+    assert.strictEqual(lines[1], '')
   })
   it('test printer with low level for its namespace', async () => {
     const { stdout } = await spawnFile({}, 'infoNotPrinted.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 1)
-    assert.include(lines[0], '')
+    assert.strictEqual(lines[0], '')
   })
 })
