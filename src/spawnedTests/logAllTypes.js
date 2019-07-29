@@ -7,6 +7,4 @@ log.info({ foo: 'bar' })
 log.info(null)
 log.info(true)
 log.info(Symbol('symbol'))
-log.info(() => {
-  console.log('test')
-})
+log.info(/* istanbul ignore next */ () => { console.log('test') })

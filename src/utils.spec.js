@@ -330,7 +330,7 @@ describe('Check printer', () => {
     const { stderr } = await spawnFile({}, 'errorPrinter.js')
     const lines = stderr.split('\n')
     assert.strictEqual(lines.length, 2)
-    assert.include(lines[0], '* - errorMessage')
+    assert.include(lines[0], 'error - errorMessage')
     assert.strictEqual(lines[1], '')
   })
   it('test printer with low level for its namespace', async () => {

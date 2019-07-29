@@ -9,7 +9,7 @@ const log = makeLogger('log-level-test')
 const nodeCommand = process.execPath
 
 export const spawnFile = async (env, file) => {
-  const subprocess = spawn(nodeCommand, [path.join(__dirname, './indexTests', file)], { env })
+  const subprocess = spawn(nodeCommand, [path.join(__dirname, './spawnedTests', file)], { env })
   const end = new Promise((resolve, reject) => {
     subprocess.on('exit', (code) => {
       if (code === 0) resolve()
@@ -326,7 +326,7 @@ describe('spawned tests', () => {
         assert.strictEqual(lines.length, 3)
         assert.include(lines[0], 'this should be info level')
         assert.include(lines[1], 'this should be warn level')
-        assert.include(lines[2], '')
+        assert.strictEqual(lines[2], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -358,7 +358,7 @@ describe('spawned tests', () => {
       assert.include(stdout, 'null')
       assert.include(stdout, 'true')
       assert.include(stdout, 'Symbol(symbol)')
-      assert.include(stdout, '() => {\n  console.log(\'test\');\n}')
+      assert.include(stdout, '()=>{console.log(\'test\');}\n')
     })
     it('test type objects with multiple arguments', async () => {
       const { stdout } = await spawnFile({ }, 'logMultipleArgs.js')
@@ -368,7 +368,7 @@ describe('spawned tests', () => {
 })
 
 describe('test setHistorySize and flushToString', () => {
-  it('test setHistorySize with fewer logs than historySize', async () => {
+  it('test setHistorySize with fewer logs than history size', async () => {
     setHistorySize(5)
     log.debug('this should be debug level 1')
     log.debug('this should be debug level 2')
@@ -380,7 +380,7 @@ describe('test setHistorySize and flushToString', () => {
     assert.include(lines[1], 'this should be debug level 2')
     assert.include(lines[2], 'this should be debug level 3')
   })
-  it('test setHistorySize with equal flushToString output size', async () => {
+  it('test setHistorySize with more logs than history size', async () => {
     setHistorySize(5)
     log.debug('this should be debug level 4')
     log.debug('this should be debug level 5')

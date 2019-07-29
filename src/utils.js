@@ -88,7 +88,7 @@ export const padEnd = (string, length, padChar = ' ') =>
    */
 export const formatDate = date => {
   const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
-  const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
+  return `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
     date.getSeconds(),
     2,
     '0'
@@ -97,7 +97,6 @@ export const formatDate = date => {
     2,
     '0'
   )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
-  return formattedDate
 }
 /**
  *
