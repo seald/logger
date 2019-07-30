@@ -3,6 +3,7 @@
 import { getAllowedNamespaces, getLevel, getFromCache, formatter, padStart, padEnd, formatDate } from './utils'
 import { spawnFile } from './testUtils.spec.js'
 import { assert } from 'chai'
+import { after } from 'mocha'
 const MockDate = require('mockdate')
 const levels = ['debug', 'info', 'warn', 'error']
 const chalk = require('chalk')
@@ -185,8 +186,10 @@ describe('Check formatter when the Date object is mocked', () => {
     assert.strictEqual(UTCSign, '+')
     assert.strictEqual(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
     assert.strictEqual(namespace, logEntry.namespace)
-    assert.strictEqual(level, 'warn ')
-    assert.strictEqual(message, message)
+    after(() => {
+      assert.strictEqual(level, 'warn ')
+      assert.strictEqual(message, message)
+    })
     MockDate.reset()
   })
 
@@ -211,8 +214,10 @@ describe('Check formatter when the Date object is mocked', () => {
     assert.strictEqual(UTCSign, '-')
     assert.strictEqual(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
     assert.strictEqual(namespace, logEntry.namespace)
-    assert.strictEqual(level, 'warn ')
-    assert.strictEqual(message, message)
+    after(() => {
+      assert.strictEqual(level, 'warn ')
+      assert.strictEqual(message, message)
+    })
     MockDate.reset()
   })
 })

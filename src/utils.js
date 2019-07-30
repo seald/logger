@@ -61,6 +61,7 @@ export const getLevel = (inputNamespace, allowedNamespaces) =>
  * @returns {number}
  */
 export const getFromCache = (namespace, allowedNamespaces, cacheObject) => {
+  // better call hasOwnProperty method via Object.prototype 
   if (!Object.prototype.hasOwnProperty.call(cacheObject, namespace)) cacheObject[namespace] = getLevel(namespace, allowedNamespaces)
   return cacheObject[namespace]
 }
@@ -87,7 +88,7 @@ export const padEnd = (string, length, padChar = ' ') =>
    * @returns {string}
    */
 export const formatDate = date => {
-  const offset = padStart(Math.abs(date.getTimezoneOffset() / -60), 2, '0')
+  const offset = padStart(Math.abs(date.getTimezoneOffset() / 60), 2, '0')
   return `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
     date.getSeconds(),
     2,
