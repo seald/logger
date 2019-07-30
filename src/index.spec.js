@@ -95,7 +95,6 @@ describe('spawned tests', () => {
       })
       it('test LOG_LEVEL wildcard namespace error Level', async () => {
         const { stdout, stderr } = await spawnFile({ LOG_LEVEL: '*:error' }, 'logLevel.js')
-
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')

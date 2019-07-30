@@ -61,7 +61,7 @@ export const getLevel = (inputNamespace, allowedNamespaces) =>
  * @returns {number}
  */
 export const getFromCache = (namespace, allowedNamespaces, cacheObject) => {
-  // better call hasOwnProperty method via Object.prototype 
+  // better call hasOwnProperty method via Object.prototype
   if (!Object.prototype.hasOwnProperty.call(cacheObject, namespace)) cacheObject[namespace] = getLevel(namespace, allowedNamespaces)
   return cacheObject[namespace]
 }
