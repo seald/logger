@@ -1,40 +1,14 @@
 /* eslint-env mocha */
-import { spawn } from 'child_process'
-import path from 'path'
 import { assert } from 'chai'
 import makeLogger, { setHistorySize, flushToString } from './index.js'
+import { spawnFile } from './testUtils.spec'
 
 const log = makeLogger('log-level-test')
-
-const nodeCommand = process.execPath
-
-export const spawnFile = async (env, file) => {
-  const subprocess = spawn(nodeCommand, [path.join(__dirname, './spawnedTests', file)], { env })
-  const end = new Promise((resolve, reject) => {
-    subprocess.on('exit', (code) => {
-      if (code === 0) resolve()
-      else reject(new Error('exit code is ' + code))
-    })
-    subprocess.on('error', (error) => {
-      reject(error)
-    })
-  })
-  let stdout = ''
-  subprocess.stdout.on('data', (data) => {
-    stdout += data
-  })
-  let stderr = ''
-  subprocess.stderr.on('data', (data) => {
-    stderr += data
-  })
-  await end
-  return { stdout, stderr }
-}
 
 describe('spawned tests', () => {
   describe('test environment Variables Alias', () => {
     describe('test LOG_LEVEL environment', () => {
-      it('test LOG_LEVEL scoped namespaces debug Level', async () => {
+      it('test LOG_LEVEL scoped namespace debug Level', async () => {
         const { stdout, stderr } = await spawnFile({ LOG_LEVEL: 'log-level-test:debug' }, 'logLevel.js')
         const lines = stdout.split('\n')
         assert.strictEqual(lines.length, 4)
@@ -111,12 +85,13 @@ describe('spawned tests', () => {
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
       })
-      it('test LOG_LEVEL scoped namespace error Level', async () => {
-        const { stderr } = await spawnFile({ LOG_LEVEL: 'log-level-test:error' }, 'logLevel.js')
+      it.only('test LOG_LEVEL scoped namespace error Level', async () => {
+        const { stdout, stderr } = await spawnFile({ LOG_LEVEL: 'log-level-test:error' }, 'logLevel.js')
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
+        console.log('stdout is :',stdout)
       })
       it('test LOG_LEVEL wildcard namespace error Level', async () => {
         const { stderr } = await spawnFile({ LOG_LEVEL: '*:error' }, 'logLevel.js')
@@ -340,13 +315,13 @@ describe('spawned tests', () => {
       const { stdout } = await spawnFile({ }, 'logControlledObject.js')
       assert.include(stdout, 'Couldn\'t output log because tu ne me stringifieras pas')
     })
-    it('test logger when crashed with error type ', async () => {
+    it('test logger with error type ', async () => {
       const { stderr } = await spawnFile({ }, 'logErrorType.js')
       assert.include(stderr, 'error:log-error-type')
       assert.include(stderr, 'Error message')
       assert.include(stderr, 'code: MY_CODE')
     })
-    it('test logger when crashed with undefined', async () => {
+    it('test logger with undefined', async () => {
       const { stdout } = await spawnFile({ }, 'logUndefined.js')
       assert.include(stdout, 'undefined')
     })
@@ -358,7 +333,7 @@ describe('spawned tests', () => {
       assert.include(stdout, 'null')
       assert.include(stdout, 'true')
       assert.include(stdout, 'Symbol(symbol)')
-      assert.include(stdout, '()=>{console.log(\'test\');}\n')
+      assert.include(stdout, '() => {\n  console.log(\'test\');\n}\n')
     })
     it('test type objects with multiple arguments', async () => {
       const { stdout } = await spawnFile({ }, 'logMultipleArgs.js')

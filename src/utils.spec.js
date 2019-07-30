@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import { getAllowedNamespaces, getLevel, getFromCache, formatter, padStart, padEnd, formatDate } from './utils'
-import { spawnFile } from './index.spec'
+import { spawnFile } from './testUtils.spec.js'
 import { assert } from 'chai'
 const MockDate = require('mockdate')
 const levels = ['debug', 'info', 'warn', 'error']
@@ -164,7 +164,7 @@ describe('Check padEnd', () => {
 
 describe('Check formatter when the Date object is mocked', () => {
   const regex = /\[([0-9]{2}):([0-9]{2}):([0-9]{2})\.([0-9]{3}) ([0-9]{2})\/([0-9]{2})\/([0-9]{4}) UTC([+-])([0-9]{2})] ([a-z ]+):([A-z/]+) - (.*)/
-  it('test formatter with warn when the Date is set with negatif getTimeZone', () => {
+  it('test formatter with warn when the Date is set with negative getTimeZone', () => {
     MockDate.set(new Date(), -60)
     const logEntry = {
       namespace: 'test/test',
@@ -190,7 +190,7 @@ describe('Check formatter when the Date object is mocked', () => {
     MockDate.reset()
   })
 
-  it('test formatter with warn when the Date is set with postif getTimeZone', () => {
+  it('test formatter with warn when the Date is set with postive getTimeZone', () => {
     MockDate.set(new Date(), 60)
     const logEntry = {
       namespace: 'test/test',
@@ -237,7 +237,7 @@ describe('Check formatter when chalkmap set to true', () => {
     const cyanLine = formatted.split('\n')
     assert.strictEqual(cyanLine.length, 1)
     assert.include(cyanLine[0], chalk.cyan('debug:test/test - debugMessage'))
-    assert.include(cyanLine[0], [chalk.gray(formatDate(date))])
+    assert.include(cyanLine[0], chalk.gray(formatDate(date)))
   })
   it('test formatter with chalkmap for level 1', () => {
     const chalkMap = {
@@ -258,7 +258,7 @@ describe('Check formatter when chalkmap set to true', () => {
     const greenLine = formatted.split('\n')
     assert.strictEqual(greenLine.length, 1)
     assert.include(greenLine[0], chalk.green('info :test2/test - infoMessage'))
-    assert.include(greenLine[0], [chalk.gray(formatDate(date))])
+    assert.include(greenLine[0], chalk.gray(formatDate(date)))
   })
   it('test formatter with chalkmap for level 2', () => {
     const chalkMap = {
@@ -279,7 +279,7 @@ describe('Check formatter when chalkmap set to true', () => {
     const yellowLine = formatted.split('\n')
     assert.strictEqual(yellowLine.length, 1)
     assert.include(yellowLine[0], chalk.yellow('warn :test/* - warnMessage'))
-    assert.include(yellowLine[0], [chalk.gray(formatDate(date))])
+    assert.include(yellowLine[0], chalk.gray(formatDate(date)))
   })
   it('test formatter with chalkmap for level 3', () => {
     const chalkMap = {
@@ -300,7 +300,7 @@ describe('Check formatter when chalkmap set to true', () => {
     const redLine = formatted.split('\n')
     assert.strictEqual(redLine.length, 1)
     assert.include(redLine[0], chalk.red('error:* - errorMessage'))
-    assert.include(redLine[0], [chalk.gray(formatDate(date))])
+    assert.include(redLine[0], chalk.gray(formatDate(date)))
   })
 })
 

@@ -4,7 +4,7 @@
   ],
   "exclude": [
     "lib/**/*.spec.js",
-    "lib/indexTests/**/*"
+    "lib/spawnedTests/**/*"
   ],
   "all": true,
   "report-dir": "./coverage",
