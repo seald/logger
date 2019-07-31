@@ -186,11 +186,13 @@ describe('Check formatter when the Date object is mocked', () => {
     assert.strictEqual(UTCSign, '+')
     assert.strictEqual(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
     assert.strictEqual(namespace, logEntry.namespace)
+    assert.strictEqual(level, 'warn ')
+    assert.strictEqual(message, message)
+  })
+  describe('restore the native Date() even if test formatter with negative getTimeZone fails', () => {
     after(() => {
-      assert.strictEqual(level, 'warn ')
-      assert.strictEqual(message, message)
+      MockDate.reset()
     })
-    MockDate.reset()
   })
 
   it('test formatter with warn when the Date is set with postive getTimeZone', () => {
@@ -214,11 +216,13 @@ describe('Check formatter when the Date object is mocked', () => {
     assert.strictEqual(UTCSign, '-')
     assert.strictEqual(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
     assert.strictEqual(namespace, logEntry.namespace)
+    assert.strictEqual(level, 'warn ')
+    assert.strictEqual(message, message)
+  })
+  describe('restore the native Date() even test formatter with positive getTimeZone fails', () => {
     after(() => {
-      assert.strictEqual(level, 'warn ')
-      assert.strictEqual(message, message)
+      MockDate.reset()
     })
-    MockDate.reset()
   })
 })
 

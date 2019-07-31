@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 import { assert } from 'chai'
 import makeLogger, { setHistorySize, flushToString } from './index.js'
-import { spawnFile } from './testUtils.spec'
+import { spawnFile } from './testUtils.spec.js'
 
 const log = makeLogger('log-level-test')
 
