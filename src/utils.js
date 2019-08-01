@@ -20,11 +20,11 @@ export const getAllowedNamespaces = (unParsedNamespaces, levels, defaultLevelInd
     .map(str => str.trim())
     .filter(str => str !== '')
     .map(str => {
-      const [ namespace, level = levels[ defaultLevelIndex ] ] = str.split(':').map(str => str.trim())
+      const [namespace, level = levels[defaultLevelIndex]] = str.split(':').map(str => str.trim())
       const splitNameSpace = namespace.split('/')
       let starIndex = splitNameSpace.findIndex(el => el === '*')
       if (starIndex === 0) {
-        splitNameSpace[ 0 ] = ''
+        splitNameSpace[0] = ''
         starIndex = 1
       }
       if (starIndex !== -1) splitNameSpace.splice(starIndex)
@@ -41,17 +41,17 @@ export const getAllowedNamespaces = (unParsedNamespaces, levels, defaultLevelInd
  */
 export const getLevel = (inputNamespace, allowedNamespaces) =>
   allowedNamespaces
-    .filter(allowedNamespaces =>
-      allowedNamespaces.namespace.join('/') === '' ||
-      inputNamespace === allowedNamespaces.namespace.join('/') ||
-      inputNamespace.startsWith(allowedNamespaces.namespace.join('/') + '/')
+    .filter(
+      allowedNamespaces =>
+        allowedNamespaces.namespace.join('/') === '' ||
+        inputNamespace === allowedNamespaces.namespace.join('/') ||
+        inputNamespace.startsWith(allowedNamespaces.namespace.join('/') + '/')
     )
-    .reduce(({ previousLevel, priority }, { level, namespace }) =>
-      (priority <= namespace.length)
-        ? { previousLevel: level, priority: namespace.length }
-        : { priority, previousLevel }, { previousLevel: null, priority: -1 }
-    )
-    .previousLevel
+    .reduce(
+      ({ previousLevel, priority }, { level, namespace }) =>
+        priority <= namespace.length ? { previousLevel: level, priority: namespace.length } : { priority, previousLevel },
+      { previousLevel: null, priority: -1 }
+    ).previousLevel
 
 /**
  * To handle the cache of namespace levels
@@ -61,8 +61,9 @@ export const getLevel = (inputNamespace, allowedNamespaces) =>
  * @returns {number}
  */
 export const getFromCache = (namespace, allowedNamespaces, cacheObject) => {
-  if (!cacheObject.hasOwnProperty(namespace)) cacheObject[ namespace ] = getLevel(namespace, allowedNamespaces)
-  return cacheObject[ namespace ]
+  // better call hasOwnProperty method via Object.prototype
+  if (!Object.prototype.hasOwnProperty.call(cacheObject, namespace)) cacheObject[namespace] = getLevel(namespace, allowedNamespaces)
+  return cacheObject[namespace]
 }
 /**
  * Pads string at the beginning of the string with given padChar (must be 1 character) to reach wanted length
@@ -70,7 +71,7 @@ export const getFromCache = (namespace, allowedNamespaces, cacheObject) => {
  * @param {number} length
  * @param {string} [padChar = ' ']
  */
-const padStart = (string, length, padChar = ' ') =>
+export const padStart = (string, length, padChar = ' ') =>
   (string.toString().length < length ? padChar.repeat(length - string.toString().length) : '') + string.toString()
 
 /**
@@ -79,9 +80,25 @@ const padStart = (string, length, padChar = ' ') =>
  * @param {number} length
  * @param {string} [padChar = ' ']
  */
-const padEnd = (string, length, padChar = ' ') =>
+export const padEnd = (string, length, padChar = ' ') =>
   string.toString() + (string.toString().length < length ? padChar.repeat(length - string.toString().length) : '')
 
+/**
+   * @param date {Date}
+   * @returns {string}
+   */
+export const formatDate = date => {
+  const offset = padStart(Math.abs(date.getTimezoneOffset() / 60), 2, '0')
+  return `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(
+    date.getSeconds(),
+    2,
+    '0'
+  )}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(
+    date.getMonth() + 1,
+    2,
+    '0'
+  )}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : '-'}${offset}`
+}
 /**
  *
  * @param {{namespace: string, date: Date, level: number, message: string}} logEntry
@@ -91,11 +108,9 @@ const padEnd = (string, length, padChar = ' ') =>
  */
 export const formatter = (logEntry, levels, chalkMap = false) => {
   const { namespace, date, level, message } = logEntry
-  const offset = padStart(Math.abs(date.getTimezoneOffset() / (-60)), 2, '0')
-  const formattedDate = `${padStart(date.getHours(), 2, '0')}:${padStart(date.getMinutes(), 2, '0')}:${padStart(date.getSeconds(), 2, '0')}.${padStart(date.getMilliseconds(), 3, '0')} ${padStart(date.getDate(), 2, '0')}/${padStart(date.getMonth() + 1, 2, '0')}/${date.getFullYear()} UTC${date.getTimezoneOffset() <= 0 ? '+' : ''}${offset}`
-  const formattedMessage = `${padEnd(levels[ level ], 5)}:${namespace} - ${message}`
-  if (chalkMap) return `[${chalk.gray(formattedDate)}] ${chalk[ chalkMap[ [ levels[ level ] ] ] ](formattedMessage)}`
-  else return `[${formattedDate}] ${formattedMessage}`
+  const formattedMessage = `${padEnd(levels[level], 5)}:${namespace} - ${message}`
+  if (chalkMap) return `[${chalk.gray(formatDate(date))}] ${chalk[chalkMap[[levels[level]]]](formattedMessage)}`
+  else return `[${formatDate(date)}] ${formattedMessage}`
 }
 
 /**
