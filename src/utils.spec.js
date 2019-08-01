@@ -1,9 +1,13 @@
 /* eslint-env mocha */
 
 import { getAllowedNamespaces, getLevel, getFromCache, formatter, padStart, padEnd, formatDate } from './utils'
-import { spawnFile } from './testUtils.spec.js'
 import { assert } from 'chai'
-import { after } from 'mocha'
+import * as path from 'path'
+import { execFile } from 'child_process'
+import { promisify } from 'util'
+
+const exec = (env, file) => promisify(execFile)(process.execPath, [path.join(__dirname, './spawnedTests', file)], { env })
+
 const MockDate = require('mockdate')
 const levels = ['debug', 'info', 'warn', 'error']
 const chalk = require('chalk')
@@ -165,6 +169,11 @@ describe('Check padEnd', () => {
 
 describe('Check formatter when the Date object is mocked', () => {
   const regex = /\[([0-9]{2}):([0-9]{2}):([0-9]{2})\.([0-9]{3}) ([0-9]{2})\/([0-9]{2})\/([0-9]{4}) UTC([+-])([0-9]{2})] ([a-z ]+):([A-z/]+) - (.*)/
+
+  afterEach(() => {
+    MockDate.reset()
+  })
+
   it('test formatter with warn when the Date is set with negative getTimeZone', () => {
     MockDate.set(new Date(), -60)
     const logEntry = {
@@ -188,11 +197,6 @@ describe('Check formatter when the Date object is mocked', () => {
     assert.strictEqual(namespace, logEntry.namespace)
     assert.strictEqual(level, 'warn ')
     assert.strictEqual(message, message)
-  })
-  describe('restore the native Date() even if test formatter with negative getTimeZone fails', () => {
-    after(() => {
-      MockDate.reset()
-    })
   })
 
   it('test formatter with warn when the Date is set with postive getTimeZone', () => {
@@ -218,11 +222,6 @@ describe('Check formatter when the Date object is mocked', () => {
     assert.strictEqual(namespace, logEntry.namespace)
     assert.strictEqual(level, 'warn ')
     assert.strictEqual(message, message)
-  })
-  describe('restore the native Date() even test formatter with positive getTimeZone fails', () => {
-    after(() => {
-      MockDate.reset()
-    })
   })
 })
 
@@ -299,7 +298,7 @@ describe('Check formatter when chalkmap set to true', () => {
       error: 'red'
     }
     const logEntry = {
-      namespace: '*',
+      namespace: 'error',
       message: 'errorMessage',
       date: new Date(),
       level: 3
@@ -308,42 +307,42 @@ describe('Check formatter when chalkmap set to true', () => {
     const formatted = formatter(logEntry, levels, chalkMap)
     const redLine = formatted.split('\n')
     assert.strictEqual(redLine.length, 1)
-    assert.include(redLine[0], chalk.red('error:* - errorMessage'))
+    assert.include(redLine[0], chalk.red('error:error - errorMessage'))
     assert.include(redLine[0], chalk.gray(formatDate(date)))
   })
 })
 
 describe('Check printer', () => {
   it('test printer debug level', async () => {
-    const { stdout } = await spawnFile({}, 'debugPrinter.js')
+    const { stdout } = await exec({}, 'debugPrinter.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'test/test - debugMessage')
     assert.strictEqual(lines[1], '')
   })
   it('test printer info level', async () => {
-    const { stdout } = await spawnFile({}, 'infoPrinter.js')
+    const { stdout } = await exec({}, 'infoPrinter.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'test2/test - infoMessage')
     assert.strictEqual(lines[1], '')
   })
   it('test printer warn level', async () => {
-    const { stdout } = await spawnFile({}, 'warnPrinter.js')
+    const { stdout } = await exec({}, 'warnPrinter.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'test/* - warnMessage')
     assert.strictEqual(lines[1], '')
   })
   it('test printer error level', async () => {
-    const { stderr } = await spawnFile({}, 'errorPrinter.js')
+    const { stderr } = await exec({}, 'errorPrinter.js')
     const lines = stderr.split('\n')
     assert.strictEqual(lines.length, 2)
     assert.include(lines[0], 'error - errorMessage')
     assert.strictEqual(lines[1], '')
   })
   it('test printer with low level for its namespace', async () => {
-    const { stdout } = await spawnFile({}, 'infoNotPrinted.js')
+    const { stdout } = await exec({}, 'infoNotPrinted.js')
     const lines = stdout.split('\n')
     assert.strictEqual(lines.length, 1)
     assert.strictEqual(lines[0], '')
