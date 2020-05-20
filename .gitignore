@@ -15,3 +15,5 @@ lib/
 report.xml
 
 .vscode/
+
+.npm/

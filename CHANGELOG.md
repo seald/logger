@@ -1,3 +1,6 @@
+# Unreleased (2020-05-XX)
+- \[enhancement\] update dependencies
+
 # v0.2.1
 - \[enhancement\] update dependencies
 

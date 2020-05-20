@@ -10,13 +10,15 @@ before_script:
   - echo "registry=https://nexus.tardis.seald.io/repository/npm/" >> .npmrc
   - echo "@seald:registry=https://nexus.tardis.seald.io/repository/npm-hosted/" >> .npmrc
   - echo "always-auth=true" >> .npmrc
-  - npm ci --silent
+  - npm ci --cache .npm --prefer-offline
+
+cache:
+  key: "logger" # universal cache
+  paths:
+    - .npm/
 
 test:
   stage: test
-  cache:
-    paths:
-    - /root/.npm
   script:
     - npm run pretest
     - npm run coverage
@@ -28,9 +30,6 @@ test:
 
 deploy:
   stage: deploy
-  cache:
-    paths:
-    - ~/.npm
   script:
     - npm run build
     - npm publish
