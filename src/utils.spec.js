@@ -8,7 +8,6 @@ import { promisify } from 'util'
 
 const exec = (env, file) => promisify(execFile)(process.execPath, [path.join(__dirname, './spawnedTests', file)], { env })
 
-const MockDate = require('mockdate')
 const levels = ['debug', 'info', 'warn', 'error']
 const chalk = require('chalk')
 
@@ -164,64 +163,6 @@ describe('Check padEnd', () => {
     assert.strictEqual(padEnd('t', 2), 't ')
     assert.strictEqual(padEnd('t', 2, 'es'), 'tes')
     assert.strictEqual(padEnd('t', 2, ' '), 't ')
-  })
-})
-
-describe('Check formatter when the Date object is mocked', () => {
-  const regex = /\[([0-9]{2}):([0-9]{2}):([0-9]{2})\.([0-9]{3}) ([0-9]{2})\/([0-9]{2})\/([0-9]{4}) UTC([+-])([0-9]{2})] ([a-z ]+):([A-z/]+) - (.*)/
-
-  afterEach(() => {
-    MockDate.reset()
-  })
-
-  it('test formatter with warn when the Date is set with negative getTimeZone', () => {
-    MockDate.set(new Date(), -60)
-    const logEntry = {
-      namespace: 'test/test',
-      message: 'testMessage',
-      date: new Date(),
-      level: 2
-    }
-    const formatted = formatter(logEntry, levels)
-    assert(regex.test(formatted))
-    const [, hours, minutes, seconds, milliseconds, day, month, year, UTCSign, UTCOffset, level, namespace, message] = regex.exec(formatted)
-    assert.strictEqual(parseInt(hours), logEntry.date.getHours())
-    assert.strictEqual(parseInt(minutes), logEntry.date.getMinutes())
-    assert.strictEqual(parseInt(seconds), logEntry.date.getSeconds())
-    assert.strictEqual(parseInt(milliseconds), logEntry.date.getMilliseconds())
-    assert.strictEqual(parseInt(day), logEntry.date.getDate())
-    assert.strictEqual(parseInt(month), logEntry.date.getMonth() + 1)
-    assert.strictEqual(parseInt(year), logEntry.date.getFullYear())
-    assert.strictEqual(UTCSign, '+')
-    assert.strictEqual(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
-    assert.strictEqual(namespace, logEntry.namespace)
-    assert.strictEqual(level, 'warn ')
-    assert.strictEqual(message, message)
-  })
-
-  it('test formatter with warn when the Date is set with postive getTimeZone', () => {
-    MockDate.set(new Date(), 60)
-    const logEntry = {
-      namespace: 'test/test',
-      message: 'testMessage',
-      date: new Date(),
-      level: 2
-    }
-    const formatted = formatter(logEntry, levels)
-    assert(regex.test(formatted))
-    const [, hours, minutes, seconds, milliseconds, day, month, year, UTCSign, UTCOffset, level, namespace, message] = regex.exec(formatted)
-    assert.strictEqual(parseInt(hours), logEntry.date.getHours())
-    assert.strictEqual(parseInt(minutes), logEntry.date.getMinutes())
-    assert.strictEqual(parseInt(seconds), logEntry.date.getSeconds())
-    assert.strictEqual(parseInt(milliseconds), logEntry.date.getMilliseconds())
-    assert.strictEqual(parseInt(day), logEntry.date.getDate())
-    assert.strictEqual(parseInt(month), logEntry.date.getMonth() + 1)
-    assert.strictEqual(parseInt(year), logEntry.date.getFullYear())
-    assert.strictEqual(UTCSign, '-')
-    assert.strictEqual(parseInt(UTCOffset), Math.abs(logEntry.date.getTimezoneOffset() / 60))
-    assert.strictEqual(namespace, logEntry.namespace)
-    assert.strictEqual(level, 'warn ')
-    assert.strictEqual(message, message)
   })
 })
 
