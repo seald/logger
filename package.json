@@ -16,8 +16,9 @@
     "registry": "https://nexus.tardis.seald.io/repository/npm-hosted"
   },
   "scripts": {
-    "pretest": "npm run build && standard",
+    "pretest": "npm run build && standard && npm run test-typings",
     "test": "mocha --require source-map-support/register --timeout 15000 \"./lib/**/*.spec.js\"",
+    "test-typings": "ts-node test-typings.ts",
     "pretest-report": "npm run pretest",
     "test-report": "mocha --require source-map-support/register --reporter mocha-multi-reporters --reporter-options configFile=./mochaReportConfig.json \"./lib/**/*.spec.js\"",
     "prebuild": "rm -rf lib/",
@@ -41,6 +42,7 @@
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
+    "@types/node": "^15.3.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "mocha": "^7.1.2",
@@ -49,7 +51,8 @@
     "mockdate": "^2.0.5",
     "nyc": "^15.0.1",
     "source-map-support": "^0.5.19",
-    "standard": "^14.3.4"
+    "standard": "^14.3.4",
+    "ts-node": "^9.1.1"
   },
   "dependencies": {
     "chalk": "^4.0.0"
