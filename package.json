@@ -1,5 +1,5 @@
 {
-  "name": "@seald/logger",
+  "name": "@seald-io/logger",
   "version": "0.3.0",
   "description": "",
   "module": "src/index.js",
@@ -13,7 +13,7 @@
     "!/*/spawnedTests/*"
   ],
   "publishConfig": {
-    "registry": "https://nexus.tardis.seald.io/repository/npm-hosted"
+    "access": "public"
   },
   "scripts": {
     "pretest": "npm run build && standard && npm run test-typings",
@@ -49,6 +49,7 @@
     "mocha-junit-reporter": "^2.0.0",
     "mocha-multi-reporters": "^1.5.1",
     "nyc": "^15.1.0",
+    "semver": "^5.7.1",
     "source-map-support": "^0.5.19",
     "standard": "^16.0.3",
     "ts-node": "^9.1.1",
