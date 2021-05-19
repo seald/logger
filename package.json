@@ -1,6 +1,6 @@
 {
   "name": "@seald-io/logger",
-  "version": "0.3.0",
+  "version": "1.0.0-0",
   "description": "",
   "module": "src/index.js",
   "main": "lib/index.js",
