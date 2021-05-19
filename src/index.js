@@ -1,4 +1,5 @@
 import { formatter, getAllowedNamespaces, printer } from './utils'
+import { SetLogLevel } from './declaration'
 
 const levels = [
   'debug',

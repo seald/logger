@@ -4,8 +4,9 @@
   "description": "",
   "module": "src/index.js",
   "main": "lib/index.js",
-  "types": "lib/declaration.d.ts",
+  "types": "declaration.d.ts",
   "files": [
+    "declaration.d.ts",
     "/lib/**",
     "/src/**",
     "!/*/*.spec.js",
@@ -20,7 +21,7 @@
     "pretest-report": "npm run pretest",
     "test-report": "mocha --require source-map-support/register --reporter mocha-multi-reporters --reporter-options configFile=./mochaReportConfig.json \"./lib/**/*.spec.js\"",
     "prebuild": "rm -rf lib/",
-    "build": "babel src --out-dir lib --source-maps && cp src/declaration.d.ts lib/declaration.d.ts",
+    "build": "babel src --out-dir lib --source-maps",
     "prepare": "npm run build",
     "precoverage": "rm -rf coverage/",
     "coverage": "nyc npm run test-report"
