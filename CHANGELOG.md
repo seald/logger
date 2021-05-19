@@ -1,3 +1,7 @@
+# v0.3.0 : 2021-05-19
+- \[enhancement\] add TypeScript typings
+
+
 # v0.2.2 : 2020-05-20
 - \[enhancement\] update dependencies
 - \[enhancement\] less useless files in package
