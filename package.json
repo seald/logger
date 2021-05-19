@@ -30,10 +30,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitlab.tardis.seald.io/seald/logger.git"
+    "url": "https://github.com/seald/logger.git"
   },
-  "author": "Seald Team",
-  "license": "UNLICENSED",
+  "homepage": "https://github.com/seald/logger",
+  "author": "Seald SAS",
+  "license": "MIT",
   "standard": {
     "ignore": [
       "lib/**"
