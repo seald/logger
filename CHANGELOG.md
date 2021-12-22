@@ -1,3 +1,7 @@
+# v1.0.1 : 2021-12-22
+- \[enhancement\] update dependencies
+- \[fix\] now invalidating cache when calling setLogLevel
+
 # v1.0.0 : 2021-05-19
 - \[enhancement\] update dependencies
 - \[breaking change\] change name to @seald-io/logger and publish to public npm repo
