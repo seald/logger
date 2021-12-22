@@ -16,10 +16,11 @@ const chalkMap = {
 const history = new Array(10000)
 
 let allowedNamespaces
-const cache = {}
+let cache = {}
 
 export const setLogLevel = (logLevel) => {
   allowedNamespaces = getAllowedNamespaces(logLevel, levels, 1)
+  cache = {}
 }
 
 setLogLevel('*:info,' + (process.env.LOG_LEVEL || process.env.DEBUG_NAMESPACES || process.env.DEBUG || ''))
