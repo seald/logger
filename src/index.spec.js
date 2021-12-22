@@ -15,11 +15,12 @@ describe('spawned tests', () => {
       it('test LOG_LEVEL scoped namespace debug Level', async () => {
         const { stdout, stderr } = await exec({ LOG_LEVEL: 'log-level-test:debug' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 4)
+        assert.strictEqual(lines.length, 5)
         assert.include(lines[0], 'this should be debug level')
         assert.include(lines[1], 'this should be info level')
         assert.include(lines[2], 'this should be warn level')
-        assert.strictEqual(lines[3], '')
+        assert.include(lines[3], 'this should be debug level')
+        assert.strictEqual(lines[4], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -29,11 +30,12 @@ describe('spawned tests', () => {
       it('test LOG_LEVEL wildcard namespace debug Level', async () => {
         const { stdout, stderr } = await exec({ LOG_LEVEL: '*:debug' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 4)
+        assert.strictEqual(lines.length, 5)
         assert.include(lines[0], 'this should be debug level')
         assert.include(lines[1], 'this should be info level')
         assert.include(lines[2], 'this should be warn level')
-        assert.strictEqual(lines[3], '')
+        assert.include(lines[3], 'this should be debug level')
+        assert.strictEqual(lines[4], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -43,9 +45,11 @@ describe('spawned tests', () => {
       it('test LOG_LEVEL scoped namespace info Level', async () => {
         const { stdout, stderr } = await exec({ LOG_LEVEL: 'log-level-test:info' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 3)
+        assert.strictEqual(lines.length, 4)
         assert.include(lines[0], 'this should be info level')
         assert.include(lines[1], 'this should be warn level')
+        assert.include(lines[2], 'this should be debug level')
+        assert.strictEqual(lines[3], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -55,10 +59,11 @@ describe('spawned tests', () => {
       it('test LOG_LEVEL wildcard namespace info Level', async () => {
         const { stdout, stderr } = await exec({ LOG_LEVEL: '*:info' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 3)
+        assert.strictEqual(lines.length, 4)
         assert.include(lines[0], 'this should be info level')
         assert.include(lines[1], 'this should be warn level')
-        assert.strictEqual(lines[2], '')
+        assert.include(lines[2], 'this should be debug level')
+        assert.strictEqual(lines[3], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -68,21 +73,23 @@ describe('spawned tests', () => {
       it('test LOG_LEVEL scoped namespace warn Level', async () => {
         const { stdout, stderr } = await exec({ LOG_LEVEL: 'log-level-test:warn' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 2)
+        assert.strictEqual(lines.length, 3)
         assert.include(lines[0], 'this should be warn level')
-        assert.strictEqual(lines[1], '')
+        assert.include(lines[1], 'this should be debug level')
+        assert.strictEqual(lines[2], '')
 
         const linesErr = stderr.split('\n')
-        assert.strictEqual(lines.length, 2)
+        assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
       })
       it('test LOG_LEVEL wildcard namespace warn Level', async () => {
         const { stdout, stderr } = await exec({ LOG_LEVEL: '*:warn' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 2)
+        assert.strictEqual(lines.length, 3)
         assert.include(lines[0], 'this should be warn level')
-        assert.strictEqual(lines[1], '')
+        assert.include(lines[1], 'this should be debug level')
+        assert.strictEqual(lines[2], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -91,19 +98,27 @@ describe('spawned tests', () => {
       })
       it('test LOG_LEVEL scoped namespace error Level', async () => {
         const { stdout, stderr } = await exec({ LOG_LEVEL: 'log-level-test:error' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
-        assert.strictEqual(stdout, '')
       })
       it('test LOG_LEVEL wildcard namespace error Level', async () => {
         const { stdout, stderr } = await exec({ LOG_LEVEL: '*:error' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
-        assert.strictEqual(stdout, '')
       })
     })
 
@@ -111,11 +126,12 @@ describe('spawned tests', () => {
       it('test DEBUG scoped namespace debug Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG: 'log-level-test:debug' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 4)
+        assert.strictEqual(lines.length, 5)
         assert.include(lines[0], 'this should be debug level')
         assert.include(lines[1], 'this should be info level')
         assert.include(lines[2], 'this should be warn level')
-        assert.strictEqual(lines[3], '')
+        assert.include(lines[3], 'this should be debug level')
+        assert.strictEqual(lines[4], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -125,11 +141,12 @@ describe('spawned tests', () => {
       it('test DEBUG wildcard namespace debug Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG: '*:debug' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 4)
+        assert.strictEqual(lines.length, 5)
         assert.include(lines[0], 'this should be debug level')
         assert.include(lines[1], 'this should be info level')
         assert.include(lines[2], 'this should be warn level')
-        assert.strictEqual(lines[3], '')
+        assert.include(lines[3], 'this should be debug level')
+        assert.strictEqual(lines[4], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -139,9 +156,11 @@ describe('spawned tests', () => {
       it('test DEBUG scoped namespace info Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG: 'log-level-test:info' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 3)
+        assert.strictEqual(lines.length, 4)
         assert.include(lines[0], 'this should be info level')
         assert.include(lines[1], 'this should be warn level')
+        assert.include(lines[2], 'this should be debug level')
+        assert.strictEqual(lines[3], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -151,10 +170,11 @@ describe('spawned tests', () => {
       it('test DEBUG wildcard namespace info Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG: '*:info' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 3)
+        assert.strictEqual(lines.length, 4)
         assert.include(lines[0], 'this should be info level')
         assert.include(lines[1], 'this should be warn level')
-        assert.strictEqual(lines[2], '')
+        assert.include(lines[2], 'this should be debug level')
+        assert.strictEqual(lines[3], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -164,21 +184,23 @@ describe('spawned tests', () => {
       it('test DEBUG scoped namespace warn Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG: 'log-level-test:warn' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 2)
+        assert.strictEqual(lines.length, 3)
         assert.include(lines[0], 'this should be warn level')
-        assert.strictEqual(lines[1], '')
+        assert.include(lines[1], 'this should be debug level')
+        assert.strictEqual(lines[2], '')
 
         const linesErr = stderr.split('\n')
-        assert.strictEqual(lines.length, 2)
+        assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
       })
       it('test DEBUG wildcard namespace warn Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG: '*:warn' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 2)
+        assert.strictEqual(lines.length, 3)
         assert.include(lines[0], 'this should be warn level')
-        assert.strictEqual(lines[1], '')
+        assert.include(lines[1], 'this should be debug level')
+        assert.strictEqual(lines[2], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -186,7 +208,12 @@ describe('spawned tests', () => {
         assert.strictEqual(linesErr[1], '')
       })
       it('test DEBUG scoped namespace error Level', async () => {
-        const { stderr } = await exec({ DEBUG: 'log-level-test:error' }, 'logLevel.js')
+        const { stdout, stderr } = await exec({ DEBUG: 'log-level-test:error' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
@@ -194,7 +221,12 @@ describe('spawned tests', () => {
       })
 
       it('test DEBUG wildcard namespace error Level', async () => {
-        const { stderr } = await exec({ DEBUG: '*:error' }, 'logLevel.js')
+        const { stdout, stderr } = await exec({ DEBUG: '*:error' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
@@ -206,11 +238,12 @@ describe('spawned tests', () => {
       it('test DEBUG_NAMESPACES scoped namespace debug Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: 'log-level-test:debug' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 4)
+        assert.strictEqual(lines.length, 5)
         assert.include(lines[0], 'this should be debug level')
         assert.include(lines[1], 'this should be info level')
         assert.include(lines[2], 'this should be warn level')
-        assert.strictEqual(lines[3], '')
+        assert.include(lines[3], 'this should be debug level')
+        assert.strictEqual(lines[4], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -220,11 +253,12 @@ describe('spawned tests', () => {
       it('test DEBUG_NAMESPACES wildcard namespace debug Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: '*:debug' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 4)
+        assert.strictEqual(lines.length, 5)
         assert.include(lines[0], 'this should be debug level')
         assert.include(lines[1], 'this should be info level')
         assert.include(lines[2], 'this should be warn level')
-        assert.strictEqual(lines[3], '')
+        assert.include(lines[3], 'this should be debug level')
+        assert.strictEqual(lines[4], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -234,9 +268,11 @@ describe('spawned tests', () => {
       it('test DEBUG_NAMESPACES scoped namespace info Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: 'log-level-test:info' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 3)
+        assert.strictEqual(lines.length, 4)
         assert.include(lines[0], 'this should be info level')
         assert.include(lines[1], 'this should be warn level')
+        assert.include(lines[2], 'this should be debug level')
+        assert.strictEqual(lines[3], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -246,10 +282,11 @@ describe('spawned tests', () => {
       it('test DEBUG_NAMESPACES wildcard namespace info Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: '*:info' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 3)
+        assert.strictEqual(lines.length, 4)
         assert.include(lines[0], 'this should be info level')
         assert.include(lines[1], 'this should be warn level')
-        assert.strictEqual(lines[2], '')
+        assert.include(lines[2], 'this should be debug level')
+        assert.strictEqual(lines[3], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -259,21 +296,23 @@ describe('spawned tests', () => {
       it('test DEBUG_NAMESPACES scoped namespace warn Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: 'log-level-test:warn' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 2)
+        assert.strictEqual(lines.length, 3)
         assert.include(lines[0], 'this should be warn level')
-        assert.strictEqual(lines[1], '')
+        assert.include(lines[1], 'this should be debug level')
+        assert.strictEqual(lines[2], '')
 
         const linesErr = stderr.split('\n')
-        assert.strictEqual(lines.length, 2)
+        assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
       })
       it('test DEBUG_NAMESPACES wildcard namespace warn Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: '*:warn' }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 2)
+        assert.strictEqual(lines.length, 3)
         assert.include(lines[0], 'this should be warn level')
-        assert.strictEqual(lines[1], '')
+        assert.include(lines[1], 'this should be debug level')
+        assert.strictEqual(lines[2], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -281,7 +320,11 @@ describe('spawned tests', () => {
         assert.strictEqual(linesErr[1], '')
       })
       it('test DEBUG_NAMESPACES scoped namespace error Level', async () => {
-        const { stderr } = await exec({ DEBUG_NAMESPACES: 'log-level-test:error' }, 'logLevel.js')
+        const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: 'log-level-test:error' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -289,7 +332,11 @@ describe('spawned tests', () => {
         assert.strictEqual(linesErr[1], '')
       })
       it('test DEBUG_NAMESPACES wildcard namespace error Level', async () => {
-        const { stderr } = await exec({ DEBUG_NAMESPACES: '*:error' }, 'logLevel.js')
+        const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: '*:error' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
@@ -302,10 +349,11 @@ describe('spawned tests', () => {
       it('test undefined', async () => {
         const { stdout, stderr } = await exec({ }, 'logLevel.js')
         const lines = stdout.split('\n')
-        assert.strictEqual(lines.length, 3)
+        assert.strictEqual(lines.length, 4)
         assert.include(lines[0], 'this should be info level')
         assert.include(lines[1], 'this should be warn level')
-        assert.strictEqual(lines[2], '')
+        assert.include(lines[2], 'this should be debug level')
+        assert.strictEqual(lines[3], '')
 
         const linesErr = stderr.split('\n')
         assert.strictEqual(linesErr.length, 2)
