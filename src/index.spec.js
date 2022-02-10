@@ -120,6 +120,28 @@ describe('spawned tests', () => {
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
       })
+      it('test LOG_LEVEL scoped namespace none Level', async () => {
+        const { stdout, stderr } = await exec({ LOG_LEVEL: 'log-level-test:none' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
+        const linesErr = stderr.split('\n')
+        assert.strictEqual(linesErr.length, 1)
+        assert.strictEqual(linesErr[0], '')
+      })
+      it('test LOG_LEVEL wildcard namespace none Level', async () => {
+        const { stdout, stderr } = await exec({ LOG_LEVEL: '*:none' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
+        const linesErr = stderr.split('\n')
+        assert.strictEqual(linesErr.length, 1)
+        assert.strictEqual(linesErr[0], '')
+      })
     })
 
     describe('test DEBUG environment', () => {
@@ -219,7 +241,6 @@ describe('spawned tests', () => {
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
       })
-
       it('test DEBUG wildcard namespace error Level', async () => {
         const { stdout, stderr } = await exec({ DEBUG: '*:error' }, 'logLevel.js')
         const lines = stdout.split('\n')
@@ -231,6 +252,28 @@ describe('spawned tests', () => {
         assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
+      })
+      it('test DEBUG scoped namespace none Level', async () => {
+        const { stdout, stderr } = await exec({ DEBUG: 'log-level-test:none' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
+        const linesErr = stderr.split('\n')
+        assert.strictEqual(linesErr.length, 1)
+        assert.include(linesErr[0], '')
+      })
+      it('test DEBUG wildcard namespace none Level', async () => {
+        const { stdout, stderr } = await exec({ DEBUG: '*:none' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
+        const linesErr = stderr.split('\n')
+        assert.strictEqual(linesErr.length, 1)
+        assert.include(linesErr[0], '')
       })
     })
 
@@ -342,6 +385,28 @@ describe('spawned tests', () => {
         assert.strictEqual(linesErr.length, 2)
         assert.include(linesErr[0], 'this should be error level')
         assert.strictEqual(linesErr[1], '')
+      })
+      it('test DEBUG_NAMESPACES scoped namespace none Level', async () => {
+        const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: 'log-level-test:none' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
+        const linesErr = stderr.split('\n')
+        assert.strictEqual(linesErr.length, 1)
+        assert.include(linesErr[0], '')
+      })
+      it('test DEBUG_NAMESPACES wildcard namespace none Level', async () => {
+        const { stdout, stderr } = await exec({ DEBUG_NAMESPACES: '*:none' }, 'logLevel.js')
+        const lines = stdout.split('\n')
+        assert.strictEqual(lines.length, 2)
+        assert.include(lines[0], 'this should be debug level')
+        assert.strictEqual(lines[1], '')
+
+        const linesErr = stderr.split('\n')
+        assert.strictEqual(linesErr.length, 1)
+        assert.include(linesErr[0], '')
       })
     })
 

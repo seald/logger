@@ -4,7 +4,8 @@ const levels = [
   'debug',
   'info',
   'warn',
-  'error'
+  'error',
+  'none'
 ]
 const chalkMap = {
   date: 'gray',
