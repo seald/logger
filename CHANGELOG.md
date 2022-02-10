@@ -1,3 +1,7 @@
+# v1.1.0 : unreleased
+- \[new feature\] Adding new log-level 'none', where even 'error' level logs are not printed
+
+
 # v1.0.1 : 2021-12-22
 - \[enhancement\] update dependencies
 - \[fix\] now invalidating cache when calling setLogLevel

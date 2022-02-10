@@ -102,7 +102,7 @@ export const formatDate = date => {
 /**
  *
  * @param {{namespace: string, date: Date, level: number, message: string}} logEntry
- * @param {Array.<number>} levels
+ * @param {Array.<string>} levels
  * @param {Object.<string, string>|boolean} [chalkMap = false]
  * @returns {string}
  */
@@ -117,7 +117,7 @@ export const formatter = (logEntry, levels, chalkMap = false) => {
  *
  * @param {{namespace: string, date: Date, level: number, message: string}} logEntry
  * @param {Array.<{namespace:Array.<string>, level: number}>} allowedNamespaces
- * @param {Array.<number>} levels
+ * @param {Array.<string>} levels
  * @param {Object.<string, string>} chalkMap
  * @param {Object.<string, number>} cacheObject
  */
