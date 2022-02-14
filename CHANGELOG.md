@@ -1,4 +1,4 @@
-# v1.1.0 : unreleased
+# v1.1.0 : 2021-02-14
 - \[new feature\] Adding new log-level 'none', where even 'error' level logs are not printed
 
 
